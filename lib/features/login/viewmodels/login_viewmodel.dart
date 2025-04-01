@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../core/services/auth_service.dart';
+import '../../../core/services/auth_service.dart';
 
 class LoginViewModel extends ChangeNotifier {
   final AuthService _authService;
@@ -8,7 +8,7 @@ class LoginViewModel extends ChangeNotifier {
 
   LoginViewModel(this._authService);
 
-  Future<bool> login(String email, String password) async {
+  Future<void> login(BuildContext context, String email, String password) async {
     isLoading = true;
     errorMessage = null;
     notifyListeners();
@@ -16,10 +16,11 @@ class LoginViewModel extends ChangeNotifier {
     bool success = await _authService.login(email, password);
 
     isLoading = false;
-    if (!success) {
+    if (success) {
+      Navigator.pushReplacementNamed(context, '/mapView'); // Navega a MapView
+    } else {
       errorMessage = "Credenciales incorrectas";
     }
     notifyListeners();
-    return success;
   }
 }

@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart' as fb;
-import '../models/user.dart';
-
+import 'package:firebase_analytics/firebase_analytics.dart';
+import '../../features/login/models/user.dart';
 
 class AuthService {
   final fb.FirebaseAuth _firebaseAuth = fb.FirebaseAuth.instance;
@@ -23,6 +23,14 @@ class AuthService {
         photoUrl: credential.user!.photoURL,
       );
 
+      await FirebaseAnalytics.instance.setUserId(id: credential.user!.uid);
+      await FirebaseAnalytics.instance.logEvent(
+        name: 'login',
+        parameters: {
+          'method': 'email_password',
+        },
+      );
+
       return true;
     } catch (e) {
       return false;
@@ -41,6 +49,14 @@ class AuthService {
         email: credential.user!.email!,
         name: credential.user!.displayName,
         photoUrl: credential.user!.photoURL,
+      );
+
+      await FirebaseAnalytics.instance.setUserId(id: credential.user!.uid);
+      await FirebaseAnalytics.instance.logEvent(
+        name: 'sign_up',
+        parameters: {
+          'method': 'email_password',
+        },
       );
 
       return true;
