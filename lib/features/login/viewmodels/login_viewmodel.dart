@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'dart:convert';  // Para convertir datos a JSON
+import 'dart:typed_data'; // Para trabajar con bytes
 import '../../../core/services/auth_service.dart';
 
 class LoginViewModel extends ChangeNotifier {
   final AuthService _authService;
+
   bool isLoading = false;
   String? errorMessage;
 
@@ -17,10 +21,30 @@ class LoginViewModel extends ChangeNotifier {
 
     isLoading = false;
     if (success) {
-      Navigator.pushReplacementNamed(context, '/mapView'); // Navega a MapView
+      Navigator.pushReplacementNamed(context, '/homeView');
     } else {
       errorMessage = "Credenciales incorrectas";
     }
     notifyListeners();
   }
+
+  Future<void> register(BuildContext context, String email, String password, String displayName) async {
+    isLoading = true;
+    errorMessage = null;
+
+
+    notifyListeners();
+
+    bool success = await _authService.register(email, password);
+
+    isLoading = false;
+    if (success) {
+      Navigator.pushReplacementNamed(context, '/');
+    } else {
+      errorMessage = "Error al registrar el usuario";
+    }
+    notifyListeners();
+  }
+
+
 }
