@@ -1,3 +1,5 @@
+import 'package:ecosnap/features/login/views/register_view.dart';
+import 'package:ecosnap/views/home_view.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -11,11 +13,11 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized(); // Asegura que Flutter está inicializado
   await Firebase.initializeApp(
       options: FirebaseOptions(
-        apiKey: 'AIzaSyC2Gx3nvVezcqMwI0QMuGL7bjwYgSH1vHI',
-        appId: '1:554273153067:android:c5a5d85dc2969e7ef1ca6e',
+        apiKey: 'AIzaSyAzHUFRc37HRYLNi-Wq-N6LNpKxsTlAwYk',
+        appId: '1:145925009398:android:a2339e560fc34f08e821d7',
         messagingSenderId: 'sendid',
-        projectId: 'myapp',
-        storageBucket: 'myapp-b9yt18.appspot.com',
+        projectId: 'ecosnap-9503c',
+        storageBucket: 'ecosnap-9503c.firebasestorage.app',
       )
   );
   runApp(
@@ -39,7 +41,9 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => LoginView(),
-        '/mapView': (context) => MapView()
+        '/mapView': (context) => MapView(),
+        '/homeView': (context) => HomeView(),
+        '/registerView':(context) => RegisterView()
       },
     );
   }
