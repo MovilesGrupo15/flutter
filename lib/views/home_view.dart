@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
-const Color customGreen = Color(0xFF4CAF50); // tu color verde definido
+import '../features/map/presentation/map_view.dart';
+
+const Color customGreen = Color(0xFF4CAF50);
 
 class HomeView extends StatelessWidget {
   const HomeView({super.key});
@@ -10,7 +12,7 @@ class HomeView extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: customGreen,
-        foregroundColor: Colors.white, // para que el texto sea legible
+        foregroundColor: Colors.white,
         centerTitle: true,
       ),
       body: Padding(
@@ -19,7 +21,7 @@ class HomeView extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
-              '¡Bienvenido a la HomeView!',
+              'Bienvenido ',
               style: TextStyle(
                 fontSize: 40,
                 fontFamily: 'Nunito-Bold',
@@ -52,11 +54,14 @@ class HomeView extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Image.asset('assets/images/crepes.jpg'),
+                          Image.asset('assets/images/cinecolombia.jpg'),
                           const SizedBox(height: 8),
                           const Text(
-                            'Cupón Crepes and Waffles',
-                            style: TextStyle(fontSize: 16),
+                            'Cupón CineColombia',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontFamily: 'Nunito',
+                            ),
                           ),
                         ],
                       ),
@@ -68,23 +73,48 @@ class HomeView extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Image.asset('assets/images/crepes.jpg'),
+                          Image.asset('assets/images/McDonalds.jpg'),
                           const SizedBox(height: 8),
                           const Text(
-                            'Cupón Crepes and Waffles',
-                            style: TextStyle(fontSize: 16),
+                            'Cupón McDonalds',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontFamily: 'Nunito',
+                            ),
                           ),
                         ],
                       ),
                     ),
-                  )
-                  // Puedes agregar más elementos aquí
+                  ),
                 ],
               ),
             ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: customGreen,
+                textStyle: const TextStyle(
+                    color: Colors.white,
+                    fontFamily: 'Nunito'
+                ),
+              ),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const MapView()),
+                );
+              },
+              child: const Text(
+                  'Ver puntos cercanos',
+                    style: TextStyle(
+                    color: Colors.white,
+                    fontFamily: 'Nunito'
+                ),
+              ),
+            )
           ],
         ),
       ),
     );
   }
 }
+
