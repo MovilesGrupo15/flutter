@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'dart:convert';  // Para convertir datos a JSON
-import 'dart:typed_data'; // Para trabajar con bytes
 import '../../../core/services/auth_service.dart';
 
 class LoginViewModel extends ChangeNotifier {
