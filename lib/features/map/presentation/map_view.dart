@@ -4,8 +4,24 @@ import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 import '../state/map_mediator.dart';
 
-class MapView extends StatelessWidget {
+class MapView extends StatefulWidget {
   const MapView({super.key});
+
+  @override
+  State<MapView> createState() => _MapViewState();
+}
+
+class _MapViewState extends State<MapView> {
+  @override
+  void initState() {
+    super.initState();
+    // Llamamos a los métodos del mediator al construir la vista
+    Future.microtask(() {
+      final mediator = Provider.of<MapMediator>(context, listen: false);
+      mediator.fetchLocation();
+      mediator.loadRecyclingPoints();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -13,22 +29,22 @@ class MapView extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.green, // Matches second image
+        backgroundColor: Colors.green,
         title: const Text("Puntos Cercanos", style: TextStyle(color: Colors.white)),
-        iconTheme: const IconThemeData(color: Colors.white), // Ensures icons are visible
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: Column(
         children: [
-          // MAP SECTION
+          // MAPA
           Expanded(
-            flex: 2, // Takes more space
+            flex: 2,
             child: FlutterMap(
               options: MapOptions(
                 initialCenter: mapMediator.currentPosition != null
                     ? LatLng(
                         mapMediator.currentPosition!.latitude,
                         mapMediator.currentPosition!.longitude)
-                    : const LatLng(4.7110, -74.0721), // Bogotá default
+                    : const LatLng(4.7110, -74.0721),
                 initialZoom: 13.0,
               ),
               children: [
@@ -41,12 +57,12 @@ class MapView extends StatelessWidget {
                     markers: [
                       Marker(
                         point: LatLng(
-                            mapMediator.currentPosition!.latitude,
-                            mapMediator.currentPosition!.longitude),
+                          mapMediator.currentPosition!.latitude,
+                          mapMediator.currentPosition!.longitude),
                         width: 50.0,
                         height: 50.0,
                         child: const Icon(Icons.location_pin,
-                            color: Colors.green, size: 40),
+                            color: Colors.red, size: 40),
                       ),
                     ],
                   ),
@@ -67,11 +83,11 @@ class MapView extends StatelessWidget {
             ),
           ),
 
-          // LIST OF RECYCLING POINTS
+          // LISTA DE PUNTOS
           Expanded(
-            flex: 1, // Takes less space than the map
+            flex: 1,
             child: Container(
-              color: Colors.white, // Matches second image background
+              color: Colors.white,
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: ListView.builder(
                 itemCount: mapMediator.recyclingPoints.length,
@@ -96,7 +112,7 @@ class MapView extends StatelessWidget {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.purple, // Matches second image button color
+        backgroundColor: Colors.purple,
         onPressed: () {
           mapMediator.fetchLocation();
           mapMediator.loadRecyclingPoints();
