@@ -33,6 +33,21 @@ class MapMediator extends ChangeNotifier {
 
     _recyclingPoints = await RecyclingRepository().getRecyclingPoints();
 
+    if (_currentPosition != null) {
+      for (var point in _recyclingPoints) {
+        final distance = Geolocator.distanceBetween(
+          _currentPosition!.latitude,
+          _currentPosition!.longitude,
+          point.latitude,
+          point.longitude,
+        );
+        point.distanceMeters = distance;
+      }
+
+      _recyclingPoints.sort((a, b) =>
+          (a.distanceMeters ?? 0).compareTo(b.distanceMeters ?? 0));
+    }
+
     _isLoading = false;
     notifyListeners();
   }

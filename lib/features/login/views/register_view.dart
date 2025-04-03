@@ -8,6 +8,8 @@ class RegisterView extends StatelessWidget {
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController confirmPasswordController = TextEditingController();
 
+  RegisterView({super.key});
+
   @override
   Widget build(BuildContext context) {
     final loginViewModel = Provider.of<LoginViewModel>(context);
