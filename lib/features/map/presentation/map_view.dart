@@ -4,6 +4,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 import 'package:geolocator/geolocator.dart';
 import '../state/map_mediator.dart';
+import 'point_detail_view.dart'; // Nueva vista
 
 class MapView extends StatefulWidget {
   const MapView({super.key});
@@ -79,9 +80,20 @@ class _MapViewState extends State<MapView> {
                       point: LatLng(point.latitude, point.longitude),
                       width: 50.0,
                       height: 50.0,
-                      child: Tooltip(
-                        message: point.name,
-                        child: const Icon(Icons.recycling, color: Colors.blue, size: 30),
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => PointDetailView(point: point),
+                            ),
+                          );
+                        },
+                        child: Tooltip(
+                          message: point.name,
+                          child: const Icon(Icons.recycling,
+                              color: Colors.blue, size: 30),
+                        ),
                       ),
                     );
                   }).toList(),
@@ -125,6 +137,14 @@ class _MapViewState extends State<MapView> {
                         ],
                       ),
                       leading: const Icon(Icons.recycling, color: Colors.green),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => PointDetailView(point: point),
+                          ),
+                        );
+                      },
                     ),
                   );
                 },
