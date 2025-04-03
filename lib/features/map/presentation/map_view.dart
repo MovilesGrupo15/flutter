@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
+import 'package:geolocator/geolocator.dart';
 import '../state/map_mediator.dart';
 
 class MapView extends StatefulWidget {
@@ -12,14 +13,22 @@ class MapView extends StatefulWidget {
 }
 
 class _MapViewState extends State<MapView> {
+  late final MapController _mapController;
+
   @override
   void initState() {
     super.initState();
-    // Llamamos a los métodos del mediator al construir la vista
-    Future.microtask(() {
+    _mapController = MapController();
+
+    Future.microtask(() async {
       final mediator = Provider.of<MapMediator>(context, listen: false);
-      mediator.fetchLocation();
-      mediator.loadRecyclingPoints();
+      await mediator.fetchLocation();
+      await mediator.loadRecyclingPoints();
+
+      final pos = mediator.currentPosition;
+      if (pos != null) {
+        _mapController.move(LatLng(pos.latitude, pos.longitude), 13.0);
+      }
     });
   }
 
@@ -39,12 +48,9 @@ class _MapViewState extends State<MapView> {
           Expanded(
             flex: 2,
             child: FlutterMap(
+              mapController: _mapController,
               options: MapOptions(
-                initialCenter: mapMediator.currentPosition != null
-                    ? LatLng(
-                        mapMediator.currentPosition!.latitude,
-                        mapMediator.currentPosition!.longitude)
-                    : const LatLng(4.7110, -74.0721),
+                initialCenter: const LatLng(4.7110, -74.0721),
                 initialZoom: 13.0,
               ),
               children: [
@@ -58,7 +64,8 @@ class _MapViewState extends State<MapView> {
                       Marker(
                         point: LatLng(
                           mapMediator.currentPosition!.latitude,
-                          mapMediator.currentPosition!.longitude),
+                          mapMediator.currentPosition!.longitude,
+                        ),
                         width: 50.0,
                         height: 50.0,
                         child: const Icon(Icons.location_pin,
@@ -93,6 +100,14 @@ class _MapViewState extends State<MapView> {
                 itemCount: mapMediator.recyclingPoints.length,
                 itemBuilder: (context, index) {
                   final point = mapMediator.recyclingPoints[index];
+
+                  final distance = point.distanceMeters;
+                  final distanceText = distance != null
+                      ? (distance >= 1000
+                          ? "${(distance / 1000).toStringAsFixed(1)} km"
+                          : "${distance.toStringAsFixed(0)} m")
+                      : '';
+
                   return Card(
                     elevation: 3,
                     margin: const EdgeInsets.symmetric(vertical: 6),
@@ -101,7 +116,14 @@ class _MapViewState extends State<MapView> {
                         point.name,
                         style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
-                      subtitle: Text(point.description),
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(point.description),
+                          if (distanceText.isNotEmpty)
+                            Text("Distancia: $distanceText"),
+                        ],
+                      ),
                       leading: const Icon(Icons.recycling, color: Colors.green),
                     ),
                   );
@@ -113,9 +135,14 @@ class _MapViewState extends State<MapView> {
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.purple,
-        onPressed: () {
-          mapMediator.fetchLocation();
-          mapMediator.loadRecyclingPoints();
+        onPressed: () async {
+          await mapMediator.fetchLocation();
+          await mapMediator.loadRecyclingPoints();
+
+          final pos = mapMediator.currentPosition;
+          if (pos != null) {
+            _mapController.move(LatLng(pos.latitude, pos.longitude), 13.0);
+          }
         },
         child: const Icon(Icons.refresh, color: Colors.white),
       ),

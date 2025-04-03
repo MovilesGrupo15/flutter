@@ -4,6 +4,7 @@ class RecyclingPoint {
   final double latitude;
   final double longitude;
   final String description;
+  double? distanceMeters; // Distancia desde la ubicación del usuario
 
   RecyclingPoint({
     required this.id,
@@ -11,6 +12,7 @@ class RecyclingPoint {
     required this.latitude,
     required this.longitude,
     required this.description,
+    this.distanceMeters,
   });
 
   factory RecyclingPoint.fromJson(Map<String, dynamic> json) {
