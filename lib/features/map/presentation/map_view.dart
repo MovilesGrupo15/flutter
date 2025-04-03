@@ -4,7 +4,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 import 'package:geolocator/geolocator.dart';
 import '../state/map_mediator.dart';
-import 'point_detail_view.dart'; // Nueva vista
+import 'point_detail_view.dart';
 
 class MapView extends StatefulWidget {
   const MapView({super.key});
@@ -15,6 +15,7 @@ class MapView extends StatefulWidget {
 
 class _MapViewState extends State<MapView> {
   late final MapController _mapController;
+  String? selectedPointId;
 
   @override
   void initState() {
@@ -53,6 +54,12 @@ class _MapViewState extends State<MapView> {
               options: MapOptions(
                 initialCenter: const LatLng(4.7110, -74.0721),
                 initialZoom: 13.0,
+                onTap: (_, __) {
+                  // ✅ Oculta el nombre si se toca fuera de un marker
+                  setState(() {
+                    selectedPointId = null;
+                  });
+                },
               ),
               children: [
                 TileLayer(
@@ -74,26 +81,60 @@ class _MapViewState extends State<MapView> {
                       ),
                     ],
                   ),
+
+                // MARCADORES DE PUNTOS
                 MarkerLayer(
                   markers: mapMediator.recyclingPoints.map((point) {
+                    final isSelected = selectedPointId == point.id;
+
                     return Marker(
                       point: LatLng(point.latitude, point.longitude),
-                      width: 50.0,
-                      height: 50.0,
-                      child: GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => PointDetailView(point: point),
-                            ),
-                          );
-                        },
-                        child: Tooltip(
-                          message: point.name,
-                          child: const Icon(Icons.recycling,
-                              color: Colors.blue, size: 30),
-                        ),
+                      width: 100.0,
+                      height: 100.0,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          isSelected
+                              ? GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) => PointDetailView(point: point),
+                                      ),
+                                    );
+                                  },
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 8, vertical: 4),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(6),
+                                      boxShadow: const [
+                                        BoxShadow(
+                                            color: Colors.black26, blurRadius: 4)
+                                      ],
+                                    ),
+                                    child: Text(
+                                      point.name,
+                                      style: const TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w500),
+                                    ),
+                                  ),
+                                )
+                              : const SizedBox(height: 24), // Espacio fijo
+                          const SizedBox(height: 4),
+                          GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                selectedPointId = point.id;
+                              });
+                            },
+                            child: const Icon(Icons.recycling,
+                                color: Colors.blue, size: 30),
+                          ),
+                        ],
                       ),
                     );
                   }).toList(),
@@ -112,7 +153,6 @@ class _MapViewState extends State<MapView> {
                 itemCount: mapMediator.recyclingPoints.length,
                 itemBuilder: (context, index) {
                   final point = mapMediator.recyclingPoints[index];
-
                   final distance = point.distanceMeters;
                   final distanceText = distance != null
                       ? (distance >= 1000
