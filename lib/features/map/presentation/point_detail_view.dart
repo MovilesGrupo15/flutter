@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:ecosnap/features/map/data/recycling_point_model.dart';
+import 'navigation_view.dart';
 
 class PointDetailView extends StatelessWidget {
   final RecyclingPoint point;
@@ -67,7 +68,8 @@ class PointDetailView extends StatelessWidget {
                           width: 40.0,
                           height: 40.0,
                           point: LatLng(point.latitude, point.longitude),
-                          child: const Icon(Icons.location_on, color: Colors.blue, size: 35),
+                          child: const Icon(Icons.location_on,
+                              color: Colors.blue, size: 35),
                         ),
                       ],
                     ),
@@ -77,6 +79,29 @@ class PointDetailView extends StatelessWidget {
             ),
 
             const SizedBox(height: 20),
+
+            // 🚀 BOTÓN DE NAVEGACIÓN
+            Center(
+              child: ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.green,
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                ),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => NavigationView(point: point),
+                    ),
+                  );
+                },
+                icon: const Icon(Icons.directions, color: Colors.white),
+                label: const Text("Cómo llegar", style: TextStyle(color: Colors.white)),
+              ),
+            ),
+
+            const SizedBox(height: 20),
+
             Center(
               child: Icon(Icons.recycling, size: 80, color: Colors.green[700]),
             ),
