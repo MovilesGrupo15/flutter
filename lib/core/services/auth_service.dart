@@ -23,11 +23,19 @@ class AuthService {
         photoUrl: credential.user!.photoURL,
       );
 
-      await FirebaseAnalytics.instance.setUserId(id: credential.user!.uid);
       await FirebaseAnalytics.instance.logEvent(
         name: 'login',
         parameters: {'method': 'email_password'},
       );
+
+      await FirebaseAnalytics.instance.logEvent(
+        name: 'test_event',
+        parameters: {
+          'value': 'debug_view_test',
+          'timestamp': DateTime.now().toIso8601String(),
+        },
+      );
+
 
       return true;
     } catch (e) {
