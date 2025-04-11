@@ -1,5 +1,6 @@
 import 'package:ecosnap/features/login/views/register_view.dart';
 import 'package:ecosnap/views/home_view.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -19,7 +20,7 @@ void main() async {
         projectId: 'ecosnap-9503c',
         storageBucket: 'ecosnap-9503c.firebasestorage.app',
       )
-  );
+  ); FirebaseAnalytics.instance.setAnalyticsCollectionEnabled(true);
   runApp(
     MultiProvider(
       providers: [
