@@ -3,6 +3,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:ecosnap/features/map/data/recycling_point_model.dart';
 import 'navigation_view.dart';
+import 'feedback_view.dart'; // Nueva vista que crearemos después
 
 class PointDetailView extends StatelessWidget {
   final RecyclingPoint point;
@@ -97,6 +98,24 @@ class PointDetailView extends StatelessWidget {
                 },
                 icon: const Icon(Icons.directions, color: Colors.white),
                 label: const Text("Cómo llegar", style: TextStyle(color: Colors.white)),
+              ),
+            ),
+
+            const SizedBox(height: 12),
+
+            // 📝 BOTÓN DE FEEDBACK
+            Center(
+              child: OutlinedButton.icon(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => FeedbackView(point: point),
+                    ),
+                  );
+                },
+                icon: const Icon(Icons.feedback, color: Colors.green),
+                label: const Text("Enviar feedback"),
               ),
             ),
 

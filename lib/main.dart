@@ -1,4 +1,5 @@
 import 'package:ecosnap/features/login/views/register_view.dart';
+import 'package:ecosnap/firebase_options.dart';
 import 'package:ecosnap/views/home_view.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -12,13 +13,7 @@ import 'features/login/views/login_screen.dart'; // Asegúrate de que la importa
 void main() async {
   WidgetsFlutterBinding.ensureInitialized(); // Asegura que Flutter está inicializado
   await Firebase.initializeApp(
-      options: FirebaseOptions(
-        apiKey: 'AIzaSyAzHUFRc37HRYLNi-Wq-N6LNpKxsTlAwYk',
-        appId: '1:145925009398:android:a2339e560fc34f08e821d7',
-        messagingSenderId: 'sendid',
-        projectId: 'ecosnap-9503c',
-        storageBucket: 'ecosnap-9503c.firebasestorage.app',
-      )
+      options: DefaultFirebaseOptions.currentPlatform // Inicializa Firebase
   );
   runApp(
     MultiProvider(
