@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../../connectivity_provider.dart';
 import '../viewmodels/login_viewmodel.dart';
 
 class LoginView extends StatelessWidget {
@@ -11,12 +12,13 @@ class LoginView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final loginViewModel = Provider.of<LoginViewModel>(context);
+    final isOnline = context.watch<ConnectivityProvider>().isOnline; // 👈 Agregado
     double screenHeight = MediaQuery.of(context).size.height;
     double screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xFF4CAF50),
+        backgroundColor: const Color(0xFF4CAF50),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
@@ -25,10 +27,34 @@ class LoginView extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              SizedBox(height: screenHeight * 0.1), // Espaciado dinámico
+              SizedBox(height: screenHeight * 0.02),
+
+              // 🚨 Mensaje de sin conexión
+              if (!isOnline)
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(8),
+                  margin: const EdgeInsets.only(bottom: 12),
+                  decoration: BoxDecoration(
+                    color: Colors.red,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: const Text(
+                    'Sin conexión a Internet',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontFamily: 'Nunito-Bold',
+                      fontSize: 16,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+
+              SizedBox(height: screenHeight * 0.08),
+
               Text(
-                "Listo para Reciclar?",
-                style: TextStyle(
+                "¿Listo para Reciclar?",
+                style: const TextStyle(
                   fontFamily: 'Nunito-Bold',
                   fontSize: 50,
                   color: Colors.black,
@@ -36,11 +62,11 @@ class LoginView extends StatelessWidget {
                 textAlign: TextAlign.center,
               ),
               SizedBox(height: screenHeight * 0.02),
-              // Texto con hipervínculo para registrarse
+
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
+                  const Text(
                     "¿No tienes cuenta? ",
                     style: TextStyle(
                       fontFamily: 'Nunito',
@@ -52,7 +78,7 @@ class LoginView extends StatelessWidget {
                     onTap: () {
                       Navigator.pushNamed(context, '/registerView');
                     },
-                    child: Text(
+                    child: const Text(
                       "Regístrate",
                       style: TextStyle(
                         fontFamily: 'Nunito-Bold',
@@ -65,42 +91,46 @@ class LoginView extends StatelessWidget {
                 ],
               ),
               SizedBox(height: screenHeight * 0.05),
+
               TextField(
                 controller: emailController,
-                decoration: InputDecoration(labelText: "Correo electrónico"),
+                decoration: const InputDecoration(labelText: "Correo electrónico"),
               ),
               TextField(
                 controller: passwordController,
-                decoration: InputDecoration(labelText: "Contraseña"),
+                decoration: const InputDecoration(labelText: "Contraseña"),
                 obscureText: true,
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
+
               if (loginViewModel.isLoading)
-                CircularProgressIndicator()
+                const CircularProgressIndicator()
               else
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFF4CAF50), // Color de fondo
-                    foregroundColor: Colors.white, // Color del texto
+                    backgroundColor: const Color(0xFF4CAF50),
+                    foregroundColor: Colors.white,
                   ),
                   onPressed: () {
                     String email = emailController.text.trim();
                     String password = passwordController.text.trim();
-                    loginViewModel.login(context, email, password); // Pasa el contexto
+                    loginViewModel.login(context, email, password);
                   },
-                  child: Text(
+                  child: const Text(
                     "Iniciar Sesión",
                     style: TextStyle(fontFamily: 'Nunito'),
                   ),
                 ),
+
               if (loginViewModel.errorMessage != null)
                 Padding(
-                  padding: EdgeInsets.only(top: 10),
+                  padding: const EdgeInsets.only(top: 10),
                   child: Text(
                     loginViewModel.errorMessage!,
-                    style: TextStyle(color: Colors.red),
+                    style: const TextStyle(color: Colors.red),
                   ),
                 ),
+
               SizedBox(height: screenHeight * 0.05),
             ],
           ),

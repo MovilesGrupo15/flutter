@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import '../features/map/presentation/map_view.dart';
 
 const Color customGreen = Color(0xFF4CAF50);
@@ -38,7 +37,14 @@ class HomeView extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Image.asset('assets/images/crepes.jpg'),
+                          SizedBox(
+                            height: 200,
+                            width: double.infinity,
+                            child: Image.asset(
+                              'assets/images/crepes.jpg',
+                              fit: BoxFit.cover,
+                            ),
+                          ),
                           const SizedBox(height: 8),
                           const Text(
                             'Cupón Crepes and Waffles',
@@ -54,7 +60,14 @@ class HomeView extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Image.asset('assets/images/cinecolombia.jpg'),
+                          SizedBox(
+                            height: 200,
+                            width: double.infinity,
+                            child: Image.asset(
+                              'assets/images/cinecolombia.jpg',
+                              fit: BoxFit.cover,
+                            ),
+                          ),
                           const SizedBox(height: 8),
                           const Text(
                             'Cupón CineColombia',
@@ -73,7 +86,14 @@ class HomeView extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Image.asset('assets/images/McDonalds.jpg'),
+                          SizedBox(
+                            height: 200,
+                            width: double.infinity,
+                            child: Image.asset(
+                              'assets/images/McDonalds.jpg',
+                              fit: BoxFit.cover,
+                            ),
+                          ),
                           const SizedBox(height: 8),
                           const Text(
                             'Cupón McDonalds',
@@ -93,8 +113,8 @@ class HomeView extends StatelessWidget {
               style: ElevatedButton.styleFrom(
                 backgroundColor: customGreen,
                 textStyle: const TextStyle(
-                    color: Colors.white,
-                    fontFamily: 'Nunito'
+                  color: Colors.white,
+                  fontFamily: 'Nunito',
                 ),
               ),
               onPressed: () {
@@ -104,10 +124,10 @@ class HomeView extends StatelessWidget {
                 );
               },
               child: const Text(
-                  'Ver puntos cercanos',
-                    style: TextStyle(
-                    color: Colors.white,
-                    fontFamily: 'Nunito'
+                'Ver puntos cercanos',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontFamily: 'Nunito',
                 ),
               ),
             )
@@ -117,4 +137,3 @@ class HomeView extends StatelessWidget {
     );
   }
 }
-

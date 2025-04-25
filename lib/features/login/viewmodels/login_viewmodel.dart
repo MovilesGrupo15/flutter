@@ -18,7 +18,7 @@ class LoginViewModel extends ChangeNotifier {
 
     isLoading = false;
     if (success) {
-      Navigator.pushReplacementNamed(context, '/homeView');
+      Navigator.restorablePushReplacementNamed(context, '/homeView');
     } else {
       errorMessage = "Credenciales incorrectas";
     }
@@ -36,7 +36,7 @@ class LoginViewModel extends ChangeNotifier {
 
     isLoading = false;
     if (success) {
-      Navigator.pushReplacementNamed(context, '/');
+      Navigator.restorablePushReplacementNamed(context, '/');
     } else {
       errorMessage = "Error al registrar el usuario";
     }
