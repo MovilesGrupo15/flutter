@@ -4,7 +4,7 @@ import 'recycling_point_model.dart';
 
 class RecyclingRepository {
   // API URL
-  final String _baseUrl = "http://192.168.1.43:8000"; // IP Local si es fisico
+  final String _baseUrl = "http://157.253.69.157:8000"; // IP Local si es fisico
 
   Future<List<RecyclingPoint>> getRecyclingPoints() async {
     try {
