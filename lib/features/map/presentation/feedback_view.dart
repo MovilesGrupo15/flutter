@@ -14,31 +14,70 @@ class FeedbackView extends StatefulWidget {
 class _FeedbackViewState extends State<FeedbackView> {
   final _formKey = GlobalKey<FormState>();
 
-  String? accuracyFeedback;
-  String? materialsFeedback;
-  String? closureFeedback;
+  int accuracyStars = 0;
+  String? materialsCorrect;
+  String? wasOpen;
 
   bool submitted = false;
 
-Future<void> sendFeedback() async {
-  if (!_formKey.currentState!.validate()) return;
+  Future<void> sendFeedback() async {
+    if (materialsCorrect == null || wasOpen == null || accuracyStars == 0) return;
 
-  _formKey.currentState!.save();
+    await FirebaseAnalytics.instance.logEvent(
+      name: "recycling_point_feedback",
+      parameters: {
+        "point_id": widget.point.id,
+        "accuracy_stars": accuracyStars,
+        "materials_correct": materialsCorrect ?? "",
+        "was_open": wasOpen ?? "",
+      },
+    );
 
-  await FirebaseAnalytics.instance.logEvent(
-    name: "recycling_point_feedback",
-    parameters: {
-      "point_id": widget.point.id,
-      "accuracy_feedback": accuracyFeedback ?? "",
-      "materials_feedback": materialsFeedback ?? "",
-      "closure_feedback": closureFeedback ?? "",
-    },
-  );
+    setState(() {
+      submitted = true;
+    });
+  }
 
-  setState(() {
-    submitted = true;
-  });
-}
+  Widget buildStarRating() {
+    return Row(
+      children: List.generate(5, (index) {
+        final starIndex = index + 1;
+        return IconButton(
+          onPressed: () {
+            setState(() {
+              accuracyStars = starIndex;
+            });
+          },
+          icon: Icon(
+            Icons.star,
+            color: accuracyStars >= starIndex ? Colors.orange : Colors.grey,
+          ),
+        );
+      }),
+    );
+  }
+
+  Widget buildYesNoRadioGroup(String label, String? currentValue, void Function(String?) onChanged) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(label, style: Theme.of(context).textTheme.titleMedium),
+        const SizedBox(height: 8),
+        RadioListTile<String>(
+          title: const Text("Sí"),
+          value: "sí",
+          groupValue: currentValue,
+          onChanged: onChanged,
+        ),
+        RadioListTile<String>(
+          title: const Text("No"),
+          value: "no",
+          groupValue: currentValue,
+          onChanged: onChanged,
+        ),
+      ],
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -64,39 +103,23 @@ Future<void> sendFeedback() async {
                     Text("¿Qué tan precisa es la ubicación del punto?",
                         style: Theme.of(context).textTheme.titleMedium),
                     const SizedBox(height: 6),
-                    TextFormField(
-                      decoration:
-                          const InputDecoration(hintText: "Ej: Muy precisa"),
-                      onSaved: (value) => accuracyFeedback = value,
-                      validator: (value) =>
-                          value == null || value.isEmpty ? "Requerido" : null,
-                    ),
-                    const SizedBox(height: 20),
+                    buildStarRating(),
 
-                    Text("¿Qué materiales aceptan realmente?",
-                        style: Theme.of(context).textTheme.titleMedium),
-                    const SizedBox(height: 6),
-                    TextFormField(
-                      decoration: const InputDecoration(
-                          hintText: "Ej: Solo plástico y papel"),
-                      onSaved: (value) => materialsFeedback = value,
-                      validator: (value) =>
-                          value == null || value.isEmpty ? "Requerido" : null,
-                    ),
                     const SizedBox(height: 20),
-
-                    Text("¿Estaba abierto y operativo?",
-                        style: Theme.of(context).textTheme.titleMedium),
-                    const SizedBox(height: 6),
-                    TextFormField(
-                      decoration: const InputDecoration(
-                          hintText: "Ej: Estaba cerrado por mantenimiento"),
-                      onSaved: (value) => closureFeedback = value,
-                      validator: (value) =>
-                          value == null || value.isEmpty ? "Requerido" : null,
+                    buildYesNoRadioGroup(
+                      "¿Los materiales aceptados eran correctos?",
+                      materialsCorrect,
+                      (val) => setState(() => materialsCorrect = val),
                     ),
+
+                    const SizedBox(height: 20),
+                    buildYesNoRadioGroup(
+                      "¿El punto estaba operativo?",
+                      wasOpen,
+                      (val) => setState(() => wasOpen = val),
+                    ),
+
                     const SizedBox(height: 30),
-
                     ElevatedButton.icon(
                       style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.green,
