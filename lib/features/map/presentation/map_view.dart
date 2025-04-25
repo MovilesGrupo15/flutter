@@ -3,7 +3,6 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 import '../state/map_mediator.dart';
-import 'point_detail_view.dart';
 
 class MapView extends StatefulWidget {
   const MapView({super.key});
@@ -93,11 +92,10 @@ class _MapViewState extends State<MapView> {
                           isSelected
                               ? GestureDetector(
                                   onTap: () {
-                                    Navigator.push(
+                                    Navigator.pushNamed(
                                       context,
-                                      MaterialPageRoute(
-                                        builder: (_) => PointDetailView(point: point),
-                                      ),
+                                      '/pointDetail',
+                                      arguments: point,
                                     );
                                   },
                                   child: Container(
@@ -170,11 +168,10 @@ class _MapViewState extends State<MapView> {
                       ),
                       leading: const Icon(Icons.recycling, color: Colors.green),
                       onTap: () {
-                        Navigator.push(
+                        Navigator.pushNamed(
                           context,
-                          MaterialPageRoute(
-                            builder: (_) => PointDetailView(point: point),
-                          ),
+                          '/pointDetail',
+                          arguments: point,
                         );
                       },
                     ),
