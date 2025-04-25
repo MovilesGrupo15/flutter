@@ -54,7 +54,6 @@ class _MapViewState extends State<MapView> {
                 initialCenter: const LatLng(4.7110, -74.0721),
                 initialZoom: 13.0,
                 onTap: (_, __) {
-                  // ✅ Oculta el nombre si se toca fuera de un marker
                   setState(() {
                     selectedPointId = null;
                   });
@@ -80,8 +79,6 @@ class _MapViewState extends State<MapView> {
                       ),
                     ],
                   ),
-
-                // MARCADORES DE PUNTOS
                 MarkerLayer(
                   markers: mapMediator.recyclingPoints.map((point) {
                     final isSelected = selectedPointId == point.id;
@@ -104,25 +101,21 @@ class _MapViewState extends State<MapView> {
                                     );
                                   },
                                   child: Container(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 8, vertical: 4),
+                                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                                     decoration: BoxDecoration(
                                       color: Colors.white,
                                       borderRadius: BorderRadius.circular(6),
                                       boxShadow: const [
-                                        BoxShadow(
-                                            color: Colors.black26, blurRadius: 4)
+                                        BoxShadow(color: Colors.black26, blurRadius: 4),
                                       ],
                                     ),
                                     child: Text(
                                       point.name,
-                                      style: const TextStyle(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w500),
+                                      style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
                                     ),
                                   ),
                                 )
-                              : const SizedBox(height: 24), // Espacio fijo
+                              : const SizedBox(height: 24),
                           const SizedBox(height: 4),
                           GestureDetector(
                             onTap: () {
@@ -130,8 +123,7 @@ class _MapViewState extends State<MapView> {
                                 selectedPointId = point.id;
                               });
                             },
-                            child: const Icon(Icons.recycling,
-                                color: Colors.blue, size: 30),
+                            child: const Icon(Icons.recycling, color: Colors.blue, size: 30),
                           ),
                         ],
                       ),
@@ -170,7 +162,8 @@ class _MapViewState extends State<MapView> {
                       subtitle: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(point.description),
+                          Text("Residuo: ${point.residuoNombre}"),
+                          Text("Horario: ${point.horario}"),
                           if (distanceText.isNotEmpty)
                             Text("Distancia: $distanceText"),
                         ],
