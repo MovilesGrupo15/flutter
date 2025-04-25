@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../viewmodels/login_viewmodel.dart';
+import '../../../connectivity_provider.dart';
 
 class RegisterView extends StatelessWidget {
   final TextEditingController nameController = TextEditingController();
@@ -13,14 +14,16 @@ class RegisterView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final loginViewModel = Provider.of<LoginViewModel>(context);
+    final isOnline = context.watch<ConnectivityProvider>().isOnline; // 👈 integración de estado de red
+
     double screenHeight = MediaQuery.of(context).size.height;
     double screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xFF4CAF50),
+        backgroundColor: const Color(0xFF4CAF50),
         centerTitle: true,
-        title: Text("Registro"),
+        title: const Text("Registro"),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -28,8 +31,31 @@ class RegisterView extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              SizedBox(height: screenHeight * 0.1),
-              Text(
+              const SizedBox(height: 16),
+
+              // 🚨 Aviso de conexión
+              if (!isOnline)
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(8),
+                  margin: const EdgeInsets.only(bottom: 12),
+                  decoration: BoxDecoration(
+                    color: Colors.red,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: const Text(
+                    'Sin conexión a Internet',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontFamily: 'Nunito-Bold',
+                      fontSize: 16,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+
+              SizedBox(height: screenHeight * 0.05),
+              const Text(
                 "Crea tu cuenta",
                 style: TextStyle(
                   fontFamily: 'Nunito-Bold',
@@ -41,29 +67,29 @@ class RegisterView extends StatelessWidget {
               SizedBox(height: screenHeight * 0.05),
               TextField(
                 controller: nameController,
-                decoration: InputDecoration(labelText: "Nombre"),
+                decoration: const InputDecoration(labelText: "Nombre"),
               ),
               TextField(
                 controller: emailController,
-                decoration: InputDecoration(labelText: "Correo electrónico"),
+                decoration: const InputDecoration(labelText: "Correo electrónico"),
               ),
               TextField(
                 controller: passwordController,
-                decoration: InputDecoration(labelText: "Contraseña"),
+                decoration: const InputDecoration(labelText: "Contraseña"),
                 obscureText: true,
               ),
               TextField(
                 controller: confirmPasswordController,
-                decoration: InputDecoration(labelText: "Confirmar contraseña"),
+                decoration: const InputDecoration(labelText: "Confirmar contraseña"),
                 obscureText: true,
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               if (loginViewModel.isLoading)
-                CircularProgressIndicator()
+                const CircularProgressIndicator()
               else
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFF4CAF50),
+                    backgroundColor: const Color(0xFF4CAF50),
                     foregroundColor: Colors.white,
                   ),
                   onPressed: () {
@@ -74,7 +100,7 @@ class RegisterView extends StatelessWidget {
 
                     if (password != confirmPassword) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
+                        const SnackBar(
                           content: Text("Las contraseñas no coinciden"),
                           backgroundColor: Colors.red,
                         ),
@@ -84,7 +110,7 @@ class RegisterView extends StatelessWidget {
 
                     if (name.isEmpty) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
+                        const SnackBar(
                           content: Text("El nombre no puede estar vacío"),
                           backgroundColor: Colors.red,
                         ),
@@ -92,21 +118,19 @@ class RegisterView extends StatelessWidget {
                       return;
                     }
 
-                    // Se asume que has modificado el método register en tu ViewModel
-                    // para aceptar también el displayName
                     loginViewModel.register(context, email, password, name);
                   },
-                  child: Text(
+                  child: const Text(
                     "Registrar",
                     style: TextStyle(fontFamily: 'Nunito'),
                   ),
                 ),
               if (loginViewModel.errorMessage != null)
                 Padding(
-                  padding: EdgeInsets.only(top: 10),
+                  padding: const EdgeInsets.only(top: 10),
                   child: Text(
                     loginViewModel.errorMessage!,
-                    style: TextStyle(color: Colors.red),
+                    style: const TextStyle(color: Colors.red),
                   ),
                 ),
               SizedBox(height: screenHeight * 0.05),

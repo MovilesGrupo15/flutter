@@ -2,6 +2,7 @@ import 'package:ecosnap/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'connectivity_provider.dart';
 import 'core/services/auth_service.dart';
 import 'features/login/viewmodels/login_viewmodel.dart';
 import 'features/map/state/map_mediator.dart';
@@ -15,6 +16,7 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (_) => ConnectivityProvider()),
         Provider(create: (context) => AuthService()),
         ChangeNotifierProvider(create: (context) => LoginViewModel(context.read<AuthService>())),
         ChangeNotifierProvider(create: (_) => MapMediator()),
