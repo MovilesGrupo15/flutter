@@ -3,8 +3,6 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:ecosnap/features/map/data/recycling_point_model.dart';
 import '../data/recycling_repository.dart';
-import 'navigation_view.dart';
-import 'feedback_view.dart';
 
 class PointDetailView extends StatelessWidget {
   final RecyclingPoint point;
@@ -108,7 +106,7 @@ class PointDetailView extends StatelessWidget {
 
                 const SizedBox(height: 16),
 
-                // MINI MAPA
+                // 🌍 MINI MAPA
                 ClipRRect(
                   borderRadius: BorderRadius.circular(12),
                   child: SizedBox(
@@ -143,18 +141,17 @@ class PointDetailView extends StatelessWidget {
 
                 const SizedBox(height: 20),
 
-                // BOTÓN DE NAVEGACIÓN
+                // 🚀 BOTÓN DE NAVEGACIÓN
                 ElevatedButton.icon(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.green,
                     padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                   ),
                   onPressed: () {
-                    Navigator.push(
+                    Navigator.pushNamed(
                       context,
-                      MaterialPageRoute(
-                        builder: (_) => NavigationView(point: fullPoint),
-                      ),
+                      '/navigation', // 🔥 ahora sí correcto
+                      arguments: fullPoint,
                     );
                   },
                   icon: const Icon(Icons.directions, color: Colors.white),
@@ -163,14 +160,13 @@ class PointDetailView extends StatelessWidget {
 
                 const SizedBox(height: 12),
 
-                // BOTÓN DE FEEDBACK
+                // 📝 BOTÓN DE FEEDBACK
                 OutlinedButton.icon(
                   onPressed: () {
-                    Navigator.push(
+                    Navigator.pushNamed(
                       context,
-                      MaterialPageRoute(
-                        builder: (_) => FeedbackView(point: fullPoint),
-                      ),
+                      '/feedback', // 🔥 ahora sí correcto
+                      arguments: fullPoint,
                     );
                   },
                   icon: const Icon(Icons.feedback, color: Colors.green),

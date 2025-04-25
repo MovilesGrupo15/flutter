@@ -1,16 +1,14 @@
 import 'dart:convert';
-import 'package:ecosnap/features/map/data/recycling_point_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:http/http.dart' as http;
+import 'package:ecosnap/features/map/data/recycling_point_model.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../core/services/location_service.dart';
 
 class NavigationView extends StatefulWidget {
-  final RecyclingPoint point;
-
-  const NavigationView({super.key, required this.point});
+  const NavigationView({super.key});
 
   @override
   State<NavigationView> createState() => _NavigationViewState();
@@ -21,17 +19,24 @@ class _NavigationViewState extends State<NavigationView> {
   LatLng? userPosition;
   double? totalDistanceMeters;
   double? totalDurationSeconds;
+  RecyclingPoint? point;
+
+  bool _initialized = false;
 
   @override
-  void initState() {
-    super.initState();
-    loadRoute();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_initialized) {
+      point = ModalRoute.of(context)!.settings.arguments as RecyclingPoint;
+      _initialized = true;
+      loadRoute();
+    }
   }
 
   Future<void> loadRoute() async {
     final pos = await LocationService().getCurrentLocation();
     final start = LatLng(pos.latitude, pos.longitude);
-    final end = LatLng(widget.point.latitude, widget.point.longitude);
+    final end = LatLng(point!.latitude, point!.longitude);
 
     setState(() {
       userPosition = start;
@@ -72,9 +77,9 @@ class _NavigationViewState extends State<NavigationView> {
   }
 
   void openInGoogleMaps() async {
-    if (userPosition == null) return;
+    if (userPosition == null || point == null) return;
 
-    final destination = '${widget.point.latitude},${widget.point.longitude}';
+    final destination = '${point!.latitude},${point!.longitude}';
     final origin = '${userPosition!.latitude},${userPosition!.longitude}';
 
     final url = Uri.parse(
@@ -91,99 +96,94 @@ class _NavigationViewState extends State<NavigationView> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
+    if (point == null || userPosition == null) {
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Navegación"),
         backgroundColor: Colors.green,
       ),
-      body: userPosition == null
-          ? const Center(child: CircularProgressIndicator())
-          : Stack(
-              children: [
-                FlutterMap(
-                  options: MapOptions(
-                    initialCenter: userPosition!,
-                    initialZoom: 14,
+      body: Stack(
+        children: [
+          FlutterMap(
+            options: MapOptions(
+              initialCenter: userPosition!,
+              initialZoom: 14,
+            ),
+            children: [
+              TileLayer(
+                urlTemplate:
+                    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                subdomains: ['a', 'b', 'c'],
+              ),
+              MarkerLayer(
+                markers: [
+                  Marker(
+                    point: userPosition!,
+                    width: 50,
+                    height: 50,
+                    child: const Icon(Icons.person_pin_circle,
+                        color: Colors.red, size: 40),
                   ),
-                  children: [
-                    TileLayer(
-                      urlTemplate:
-                          "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-                      subdomains: ['a', 'b', 'c'],
-                    ),
-                    MarkerLayer(
-                      markers: [
-                        Marker(
-                          point: userPosition!,
-                          width: 50,
-                          height: 50,
-                          child: const Icon(Icons.person_pin_circle,
-                              color: Colors.red, size: 40),
-                        ),
-                        Marker(
-                          point: LatLng(widget.point.latitude,
-                              widget.point.longitude),
-                          width: 50,
-                          height: 50,
-                          child: const Icon(Icons.recycling,
-                              color: Colors.blue, size: 35),
-                        ),
-                      ],
-                    ),
-                    if (routePoints.isNotEmpty)
-                      PolylineLayer(
-                        polylines: [
-                          Polyline(
-                            points: routePoints,
-                            color: Colors.blue,
-                            strokeWidth: 5,
-                          )
-                        ],
-                      ),
+                  Marker(
+                    point: LatLng(point!.latitude, point!.longitude),
+                    width: 50,
+                    height: 50,
+                    child: const Icon(Icons.recycling,
+                        color: Colors.blue, size: 35),
+                  ),
+                ],
+              ),
+              if (routePoints.isNotEmpty)
+                PolylineLayer(
+                  polylines: [
+                    Polyline(
+                      points: routePoints,
+                      color: Colors.blue,
+                      strokeWidth: 5,
+                    )
                   ],
                 ),
-
-                // Información flotante de distancia y duración
-                if (totalDistanceMeters != null &&
-                    totalDurationSeconds != null)
-                  Positioned(
-                    top: 20,
-                    left: 20,
-                    right: 20,
-                    child: Container(
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(8),
-                        boxShadow: const [
-                          BoxShadow(
-                              color: Colors.black26,
-                              blurRadius: 5,
-                              offset: Offset(0, 2)),
-                        ],
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "Distancia: ${formatDistance(totalDistanceMeters!)}",
-                            style: const TextStyle(fontSize: 14),
-                          ),
-                          Text(
-                            "Duración: ${formatDuration(totalDurationSeconds!)}",
-                            style: const TextStyle(fontSize: 14),
-                          ),
-                        ],
-                      ),
+            ],
+          ),
+          if (totalDistanceMeters != null && totalDurationSeconds != null)
+            Positioned(
+              top: 20,
+              left: 20,
+              right: 20,
+              child: Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(8),
+                  boxShadow: const [
+                    BoxShadow(
+                        color: Colors.black26,
+                        blurRadius: 5,
+                        offset: Offset(0, 2)),
+                  ],
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Distancia: ${formatDistance(totalDistanceMeters!)}",
+                      style: const TextStyle(fontSize: 14),
                     ),
-                  ),
-              ],
+                    Text(
+                      "Duración: ${formatDuration(totalDurationSeconds!)}",
+                      style: const TextStyle(fontSize: 14),
+                    ),
+                  ],
+                ),
+              ),
             ),
-
-      // Botón flotante para abrir en Google Maps
+        ],
+      ),
       floatingActionButton: FloatingActionButton.extended(
         backgroundColor: Colors.green,
         onPressed: openInGoogleMaps,

@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 import 'recycling_point_model.dart';
 
 class RecyclingRepository {
-  final String _baseUrl = "http://172.20.10.6:8000"; // Tu IP pública
+  final String _baseUrl = "https://ecosnap-back.onrender.com"; // Tu IP pública
 
   /// Obtiene todos los puntos de reciclaje
   Future<List<RecyclingPoint>> getRecyclingPoints() async {
