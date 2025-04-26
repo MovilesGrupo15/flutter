@@ -54,7 +54,7 @@ class RecyclingRepository {
   }
 }
 
-/// 🔥 Función que corre en un isolate usando compute()
+// Función que corre en un isolate usando compute()
 List<RecyclingPoint> parseRecyclingPoints(String responseBody) {
   final List<dynamic> data = jsonDecode(responseBody);
   return data.map((json) => RecyclingPoint.fromListJson(json)).toList();

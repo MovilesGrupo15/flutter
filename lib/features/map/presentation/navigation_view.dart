@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:http/http.dart' as http;
@@ -69,16 +70,13 @@ class _NavigationViewState extends State<NavigationView> {
       final response = await http.get(Uri.parse(url)).timeout(const Duration(seconds: 8));
 
       if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        final coords = data['routes'][0]['geometry']['coordinates'] as List;
-        final distance = data['routes'][0]['distance'];
-        final duration = data['routes'][0]['duration'];
+        final parsed = await compute(parseRouteResponse, response.body);
 
         if (!mounted) return;
         setState(() {
-          totalDistanceMeters = (distance as num).toDouble();
-          totalDurationSeconds = (duration as num).toDouble();
-          routePoints = coords.map((c) => LatLng(c[1].toDouble(), c[0].toDouble())).toList();
+          totalDistanceMeters = parsed['distance'];
+          totalDurationSeconds = parsed['duration'];
+          routePoints = parsed['points'];
           _loading = false;
         });
       } else {
@@ -104,6 +102,21 @@ class _NavigationViewState extends State<NavigationView> {
         _loading = false;
       });
     }
+  }
+
+  static Map<String, dynamic> parseRouteResponse(String responseBody) {
+    final data = jsonDecode(responseBody);
+    final coords = data['routes'][0]['geometry']['coordinates'] as List;
+    final distance = (data['routes'][0]['distance'] as num).toDouble();
+    final duration = (data['routes'][0]['duration'] as num).toDouble();
+
+    final points = coords.map<LatLng>((c) => LatLng(c[1].toDouble(), c[0].toDouble())).toList();
+
+    return {
+      'distance': distance,
+      'duration': duration,
+      'points': points,
+    };
   }
 
   String formatDistance(double meters) {
@@ -174,8 +187,6 @@ class _NavigationViewState extends State<NavigationView> {
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 24),
-
-                    // 🛠 Botón de reintentar
                     OutlinedButton.icon(
                       onPressed: loadRoute,
                       icon: const Icon(Icons.refresh, color: Colors.green),
@@ -184,10 +195,7 @@ class _NavigationViewState extends State<NavigationView> {
                         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                       ),
                     ),
-
                     const SizedBox(height: 12),
-
-                    // 🛠 Botón de abrir en Google Maps
                     ElevatedButton.icon(
                       onPressed: openInGoogleMaps,
                       icon: const Icon(Icons.navigation, color: Colors.white),
@@ -197,10 +205,7 @@ class _NavigationViewState extends State<NavigationView> {
                         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                       ),
                     ),
-
                     const SizedBox(height: 12),
-
-                    // 🛠 Botón de volver
                     ElevatedButton.icon(
                       onPressed: () => Navigator.pop(context),
                       icon: const Icon(Icons.arrow_back, color: Colors.white),
@@ -256,7 +261,6 @@ class _NavigationViewState extends State<NavigationView> {
               ],
             ),
 
-          // ✅ Caja flotante de distancia y duración
           if (totalDistanceMeters != null && totalDurationSeconds != null && !_loadingError)
             Positioned(
               top: 20,
@@ -287,7 +291,6 @@ class _NavigationViewState extends State<NavigationView> {
               ),
             ),
 
-          // 🔴 Banner flotante "Sin conexión"
           if (!isOnline)
             Positioned(
               top: 80,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
 import 'firebase_options.dart';
 import 'core/services/connectivity_provider.dart';
 import 'core/services/auth_service.dart';
@@ -17,6 +18,15 @@ void main() async {
   );
 
   await RecyclingCacheService.init();
+
+  Future.microtask(() async {
+    try {
+      final response = await http.get(Uri.parse('https://ecosnap-back.onrender.com/api/points')).timeout(const Duration(seconds: 10));
+      debugPrint('Ping API: ${response.statusCode}');
+    } catch (e) {
+      debugPrint('Error haciendo ping al API: $e');
+    }
+  });
 
   runApp(
     MultiProvider(
@@ -40,7 +50,7 @@ class MyApp extends StatelessWidget {
       restorationScopeId: 'rootApp',
       debugShowCheckedModeBanner: false,
       onGenerateRoute: AppRouter.generateRoute,
-      home: const AuthWrapper(), // 👈 Home dinámico
+      home: const AuthWrapper(),
     );
   }
 }
@@ -71,7 +81,6 @@ class _AuthWrapperState extends State<AuthWrapper> {
 
   @override
   Widget build(BuildContext context) {
-    // Mientras decide a dónde ir
     return const Scaffold(
       body: Center(child: CircularProgressIndicator()),
     );
