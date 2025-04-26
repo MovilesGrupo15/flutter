@@ -7,12 +7,16 @@ import 'core/services/auth_service.dart';
 import 'features/login/viewmodels/login_viewmodel.dart';
 import 'features/map/state/map_mediator.dart';
 import 'router/app_router.dart';
+import 'features/map/data/recycling_cache_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  await RecyclingCacheService.init();
+
   runApp(
     MultiProvider(
       providers: [
