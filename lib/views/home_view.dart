@@ -240,20 +240,19 @@ class HomeView extends StatelessWidget {
             ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: isOnline ? customGreen : Colors.grey,
+                backgroundColor: customGreen,
                 textStyle: const TextStyle(
                   color: Colors.white,
                   fontFamily: 'Nunito',
                 ),
               ),
-              onPressed: isOnline
-                  ? () {
+              onPressed: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const MapView()),
                 );
               }
-                  : null,
+              ,
               child: const Text(
                 'Ver puntos cercanos',
                 style: TextStyle(
