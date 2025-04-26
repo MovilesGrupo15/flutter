@@ -23,6 +23,10 @@ class AppRouter {
           builder: (_) => RegisterView(),
           settings: settings,
         );
+      case '/loginView':
+        return MaterialPageRoute(
+          builder: (_) => LoginView(),
+        );
       case '/homeView':
         return MaterialPageRoute(
           builder: (_) => HomeView(),
