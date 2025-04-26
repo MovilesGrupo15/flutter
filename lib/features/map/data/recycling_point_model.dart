@@ -1,5 +1,3 @@
-// lib/features/map/data/recycling_point_model.dart
-
 class RecyclingPoint {
   // Campos comunes a lista y detalle
   final String id;
@@ -55,7 +53,7 @@ class RecyclingPoint {
       longitude: (json['longitude'] as num).toDouble(),
       address: json['address'] ?? '',
       residuoNombre: json['description'] ?? '',
-      horario: json['horario'] ?? '',          // asegúrate que el repo mapea este campo
+      horario: json['horario'] ?? '', 
       // el resto queda nulo
       fecha: null,
       imagenUrl: null,

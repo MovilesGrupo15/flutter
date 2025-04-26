@@ -84,7 +84,6 @@ class _MapViewState extends State<MapView> {
                     MarkerLayer(
                       markers: mapMediator.recyclingPoints.map((point) {
                         final isSelected = selectedPointId == point.id;
-
                         return Marker(
                           point: LatLng(point.latitude, point.longitude),
                           width: 100.0,
@@ -184,7 +183,6 @@ class _MapViewState extends State<MapView> {
             ],
           ),
 
-          // 🔴 Banner flotante cuando no hay conexión
           if (!isOnline)
             Positioned(
               top: 16,
@@ -213,18 +211,37 @@ class _MapViewState extends State<MapView> {
         ],
       ),
       floatingActionButton: isOnline
-          ? FloatingActionButton(
-              backgroundColor: Colors.purple,
-              onPressed: () async {
-                await mapMediator.fetchLocation();
-                await mapMediator.loadRecyclingPoints();
+          ? Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                FloatingActionButton(
+                  mini: true,
+                  heroTag: 'centerLocation',
+                  backgroundColor: Colors.blue,
+                  onPressed: () {
+                    final pos = mapMediator.currentPosition;
+                    if (pos != null) {
+                      _mapController.move(LatLng(pos.latitude, pos.longitude), 15.0);
+                    }
+                  },
+                  child: const Icon(Icons.my_location, color: Colors.white),
+                ),
+                const SizedBox(height: 12),
+                FloatingActionButton(
+                  heroTag: 'refreshMap',
+                  backgroundColor: Colors.purple,
+                  onPressed: () async {
+                    await mapMediator.fetchLocation();
+                    await mapMediator.loadRecyclingPoints();
 
-                final pos = mapMediator.currentPosition;
-                if (pos != null) {
-                  _mapController.move(LatLng(pos.latitude, pos.longitude), 13.0);
-                }
-              },
-              child: const Icon(Icons.refresh, color: Colors.white),
+                    final pos = mapMediator.currentPosition;
+                    if (pos != null) {
+                      _mapController.move(LatLng(pos.latitude, pos.longitude), 13.0);
+                    }
+                  },
+                  child: const Icon(Icons.refresh, color: Colors.white),
+                ),
+              ],
             )
           : null,
     );

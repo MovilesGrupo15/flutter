@@ -34,7 +34,7 @@ class MapMediator extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final isConnected = await ConnectivityProvider.checkConnection(); // 🔥
+      final isConnected = await ConnectivityProvider.checkConnection();
       if (isConnected) {
         _recyclingPoints = await RecyclingRepository().getRecyclingPoints();
         debugPrint('Datos cargados desde API');
