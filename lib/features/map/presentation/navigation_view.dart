@@ -169,28 +169,44 @@ class _NavigationViewState extends State<NavigationView> {
                     ),
                     const SizedBox(height: 10),
                     const Text(
-                      'No se pudo calcular la ruta porque fallo la conexion con el servidor del mapa.',
+                      'No se pudo calcular la ruta porque falló la conexión con el servidor del mapa.',
                       style: TextStyle(fontSize: 16),
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 24),
-                    ElevatedButton.icon(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      icon: const Icon(Icons.arrow_back, color: Colors.white),
-                      label: const Text("Volver", style: TextStyle(color: Colors.white)),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.green,
-                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                      ),
-                    ),
-                    const SizedBox(height: 12),
+
+                    // 🛠 Botón de reintentar
                     OutlinedButton.icon(
                       onPressed: loadRoute,
                       icon: const Icon(Icons.refresh, color: Colors.green),
                       label: const Text("Reintentar"),
                       style: OutlinedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                      ),
+                    ),
+
+                    const SizedBox(height: 12),
+
+                    // 🛠 Botón de abrir en Google Maps
+                    ElevatedButton.icon(
+                      onPressed: openInGoogleMaps,
+                      icon: const Icon(Icons.navigation, color: Colors.white),
+                      label: const Text("Abrir en Google Maps", style: TextStyle(color: Colors.white)),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.green,
+                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                      ),
+                    ),
+
+                    const SizedBox(height: 12),
+
+                    // 🛠 Botón de volver
+                    ElevatedButton.icon(
+                      onPressed: () => Navigator.pop(context),
+                      icon: const Icon(Icons.arrow_back, color: Colors.white),
+                      label: const Text("Volver", style: TextStyle(color: Colors.white)),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.grey,
                         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                       ),
                     ),
