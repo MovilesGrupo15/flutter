@@ -30,4 +30,9 @@ class ConnectivityProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  static Future<bool> checkConnection() async {
+    final connectivityResult = await Connectivity().checkConnectivity();
+    return connectivityResult != ConnectivityResult.none;
+  }
 }

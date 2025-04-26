@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../viewmodels/login_viewmodel.dart';
-import '../../../connectivity_provider.dart';
+import '../../../core/services/connectivity_provider.dart';
 
 class RegisterView extends StatelessWidget {
   final TextEditingController nameController = TextEditingController();
