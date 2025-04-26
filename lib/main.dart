@@ -1,8 +1,10 @@
-import 'package:ecosnap/firebase_options.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
-import 'connectivity_provider.dart';
+
+import 'firebase_options.dart';
+import 'core/services/connectivity_provider.dart';
 import 'core/services/auth_service.dart';
 import 'features/login/viewmodels/login_viewmodel.dart';
 import 'features/map/state/map_mediator.dart';
@@ -33,8 +35,42 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       restorationScopeId: 'rootApp',
-      initialRoute: '/',
+      debugShowCheckedModeBanner: false,
       onGenerateRoute: AppRouter.generateRoute,
+      home: const AuthWrapper(), // 👈 Home dinámico
+    );
+  }
+}
+
+class AuthWrapper extends StatefulWidget {
+  const AuthWrapper({super.key});
+
+  @override
+  State<AuthWrapper> createState() => _AuthWrapperState();
+}
+
+class _AuthWrapperState extends State<AuthWrapper> {
+  @override
+  void initState() {
+    super.initState();
+    _checkAuthStatus();
+  }
+
+  Future<void> _checkAuthStatus() async {
+    FirebaseAuth.instance.authStateChanges().listen((user) {
+      if (user == null) {
+        Navigator.pushReplacementNamed(context, '/loginView');
+      } else {
+        Navigator.pushReplacementNamed(context, '/homeView');
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // Mientras decide a dónde ir
+    return const Scaffold(
+      body: Center(child: CircularProgressIndicator()),
     );
   }
 }
