@@ -1,15 +1,22 @@
 class User {
   final String id;
   final String email;
-  final String name;
+  final String? name;
+  final String? photoUrl;
 
-  User({required this.id, required this.email, required this.name});
+  User({
+    required this.id,
+    required this.email,
+    this.name,
+    this.photoUrl,
+  });
 
-  factory User.fromJson(Map<String, dynamic> json) {
+  factory User.fromFirebase(Map<String, dynamic> json) {
     return User(
-      id: json['id'],
+      id: json['uid'],
       email: json['email'],
-      name: json['name'],
+      name: json['displayName'],
+      photoUrl: json['photoURL'],
     );
   }
 }
