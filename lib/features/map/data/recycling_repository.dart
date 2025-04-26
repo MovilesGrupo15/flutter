@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:ecosnap/features/map/data/recycling_cache_service.dart';
 import '../../../core/services/connectivity_provider.dart';
@@ -16,9 +17,9 @@ class RecyclingRepository {
         final response = await http.get(Uri.parse("$_baseUrl/api/points"));
 
         if (response.statusCode == 200) {
-          final List<dynamic> data = jsonDecode(response.body);
-          final points = data.map((json) => RecyclingPoint.fromListJson(json)).toList();
-          
+          // Usamos compute para parsear en un isolate
+          final points = await compute(parseRecyclingPoints, response.body);
+
           // Guardamos en cache local
           await RecyclingCacheService.saveRecyclingPoints(points);
 
@@ -51,4 +52,10 @@ class RecyclingRepository {
       throw Exception("Error de conexión: $e");
     }
   }
+}
+
+/// 🔥 Función que corre en un isolate usando compute()
+List<RecyclingPoint> parseRecyclingPoints(String responseBody) {
+  final List<dynamic> data = jsonDecode(responseBody);
+  return data.map((json) => RecyclingPoint.fromListJson(json)).toList();
 }
