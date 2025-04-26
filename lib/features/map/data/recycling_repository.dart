@@ -1,22 +1,35 @@
-// lib/features/map/data/recycling_repository.dart
-
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:ecosnap/features/map/data/recycling_cache_service.dart';
+import '../../../core/services/connectivity_provider.dart';
 import 'recycling_point_model.dart';
 
 class RecyclingRepository {
-  final String _baseUrl = "https://ecosnap-back.onrender.com"; // Tu IP pública
+  final String _baseUrl = "https://ecosnap-back.onrender.com";
 
   /// Obtiene todos los puntos de reciclaje
   Future<List<RecyclingPoint>> getRecyclingPoints() async {
     try {
-      final response = await http.get(Uri.parse("$_baseUrl/api/points"));
+      final isOnline = await ConnectivityProvider.checkConnection();
 
-      if (response.statusCode == 200) {
-        final List<dynamic> data = jsonDecode(response.body);
-        return data.map((json) => RecyclingPoint.fromListJson(json)).toList();
+      if (isOnline) {
+        final response = await http.get(Uri.parse("$_baseUrl/api/points"));
+
+        if (response.statusCode == 200) {
+          final List<dynamic> data = jsonDecode(response.body);
+          final points = data.map((json) => RecyclingPoint.fromListJson(json)).toList();
+          
+          // Guardamos en cache local
+          await RecyclingCacheService.saveRecyclingPoints(points);
+
+          return points;
+        } else {
+          throw Exception("Error al obtener los puntos: ${response.statusCode}");
+        }
       } else {
-        throw Exception("Error al obtener los puntos: ${response.statusCode}");
+        // Si está offline, carga desde Hive
+        final cachedPoints = RecyclingCacheService.getRecyclingPoints();
+        return cachedPoints;
       }
     } catch (e) {
       throw Exception("Error de conexión: $e");
