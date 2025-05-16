@@ -1,7 +1,15 @@
-import 'package:ecosnap/features/camera/photopreview_view.dart';
+import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:provider/provider.dart';
+import 'package:ecosnap/features/camera/photopreview_view.dart';
+
+
+Future<int> _processImage(String path) async {
+  final bytes = await File(path).readAsBytes();
+  return bytes.length;
+}
 
 class CameraView extends StatefulWidget {
   const CameraView({Key? key}) : super(key: key);
@@ -34,18 +42,21 @@ class _CameraViewState extends State<CameraView> {
     }
   }
 
-  /// Captura la foto y navega al preview
+  /// Captura la foto, la procesa en un isolate y navega al preview
   Future<void> _takePicture() async {
     if (!_controller.value.isInitialized || _controller.value.isTakingPicture) return;
     try {
       final XFile file = await _controller.takePicture();
-      // Pasamos file.path al preview
-      final bool? confirmed = await Navigator.push<bool>(
+      final int size = await compute(_processImage, file.path);
+      debugPrint('Tamaño de la imagen (bytes): $size');
+
+      final bool? confirmed = await Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => PhotoPreviewView(imagePath: file.path),
         ),
       );
+
       if (confirmed == true) {
         debugPrint('Foto confirmada: ${file.path}');
       } else {
@@ -55,7 +66,6 @@ class _CameraViewState extends State<CameraView> {
       debugPrint('Error al tomar la foto: $e');
     }
   }
-
   @override
   void dispose() {
     _controller.dispose();
