@@ -39,10 +39,12 @@ class _CameraViewState extends State<CameraView> {
     if (!_controller.value.isInitialized || _controller.value.isTakingPicture) return;
     try {
       final XFile file = await _controller.takePicture();
-      final bool? confirmed = await Navigator.pushNamed<bool>(
+      // Pasamos file.path al preview
+      final bool? confirmed = await Navigator.push<bool>(
         context,
-        '/photoPreview',  // ruta definida en AppRouter
-        arguments: file.path,
+        MaterialPageRoute(
+          builder: (context) => PhotoPreviewView(imagePath: file.path),
+        ),
       );
       if (confirmed == true) {
         debugPrint('Foto confirmada: ${file.path}');
@@ -67,10 +69,7 @@ class _CameraViewState extends State<CameraView> {
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.pushReplacementNamed(
-            context,
-            '/homeView',  // ruta al HomeView en AppRouter
-          ),
+          onPressed: () => Navigator.pushReplacementNamed(context, '/homeView'),
         ),
         title: const Text('Escanear Residuo'),
         backgroundColor: const Color(0xFF2ECC71),
@@ -112,11 +111,6 @@ class _CameraViewState extends State<CameraView> {
 }
 
 /*
-Recuerda definir en AppRouter:
-  case '/photoPreview':
-    final path = settings.arguments as String;
-    return MaterialPageRoute(
-      builder: (_) => PhotoPreviewView(imagePath: path),
-      settings: settings,
-    );
+Para cambiar el tamaño del botón:
+ • Ajusta `fixedSize: Size(width, height)`.
 */
