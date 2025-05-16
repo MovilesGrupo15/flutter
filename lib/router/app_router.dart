@@ -1,4 +1,3 @@
-import 'package:ecosnap/features/camera/photopreview_view.dart';
 import 'package:flutter/material.dart';
 import '../features/login/views/login_screen.dart';
 import '../features/login/views/register_view.dart';
@@ -6,60 +5,36 @@ import '../features/map/presentation/map_view.dart';
 import '../features/map/presentation/point_detail_view.dart';
 import '../features/map/presentation/navigation_view.dart';
 import '../features/map/presentation/feedback_view.dart';
+import '../features/map/presentation/direction_feedback_view.dart';
 import '../features/camera/camera_view.dart';
+import '../features/camera/photopreview_view.dart';
 import '../views/home_view.dart';
 import '../features/map/data/recycling_point_model.dart';
 
 class AppRouter {
   static Route<dynamic> generateRoute(RouteSettings settings) {
-    final args = settings.arguments;
-
     switch (settings.name) {
       case '/':
-        return MaterialPageRoute(
-          builder: (_) => LoginView(),
-          settings: settings,
-        );
+        return MaterialPageRoute(builder: (_) => LoginView(), settings: settings);
       case '/registerView':
-        return MaterialPageRoute(
-          builder: (_) => RegisterView(),
-          settings: settings,
-        );
+        return MaterialPageRoute(builder: (_) => RegisterView(), settings: settings);
       case '/loginView':
-        return MaterialPageRoute(
-          builder: (_) => LoginView(),
-        );
+        return MaterialPageRoute(builder: (_) => LoginView());
       case '/homeView':
-        return MaterialPageRoute(
-          builder: (_) => HomeView(),
-          settings: settings,
-        );
+        return MaterialPageRoute(builder: (_) => HomeView(), settings: settings);
       case '/mapView':
-        return MaterialPageRoute(
-          builder: (_) => MapView(),
-          settings: settings,
-        );
+        return MaterialPageRoute(builder: (_) => MapView(), settings: settings);
       case '/cameraView':
-        return MaterialPageRoute(
-          builder: (_) => CameraView(),
-          settings: settings,
-        );
+        return MaterialPageRoute(builder: (_) => CameraView(), settings: settings);
       case '/pointDetail':
-        final point = args as RecyclingPoint;
-        return MaterialPageRoute(
-          builder: (_) => PointDetailView(point: point),
-          settings: settings,
-        );
+        final point = settings.arguments as RecyclingPoint;
+        return MaterialPageRoute(builder: (_) => PointDetailView(point: point), settings: settings);
       case '/navigation':
-        return MaterialPageRoute(
-          builder: (_) => const NavigationView(),
-          settings: settings,
-        );
+        return MaterialPageRoute(builder: (_) => const NavigationView(), settings: settings);
       case '/feedback':
-        return MaterialPageRoute(
-          builder: (_) => const FeedbackView(),
-          settings: settings,
-        );
+        return MaterialPageRoute(builder: (_) => const FeedbackView(), settings: settings);
+      case '/directionFeedback':
+        return MaterialPageRoute(builder: (_) => const DirectionFeedbackView(), settings: settings);
       default:
         return MaterialPageRoute(
           builder: (_) => const Scaffold(

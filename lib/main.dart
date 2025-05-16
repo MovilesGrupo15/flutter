@@ -25,7 +25,7 @@ void main() async {
 
   Future.microtask(() async {
     try {
-      final response = await http.get(Uri.parse('https://ecosnap-back.onrender.com/api/points')).timeout(const Duration(seconds: 10));
+      final response = await http.get(Uri.parse('https://ecosnap-back.onrender.com/api/points')).timeout(const Duration(seconds: 50));
       debugPrint('Ping API: ${response.statusCode}');
     } catch (e) {
       debugPrint('Error haciendo ping al API: $e');
