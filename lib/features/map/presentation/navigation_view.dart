@@ -150,6 +150,10 @@ class _NavigationViewState extends State<NavigationView> {
     }
   }
 
+  void goToSurvey() {
+    Navigator.pushNamed(context, '/directionFeedback');
+  }
+
   @override
   Widget build(BuildContext context) {
     final isOnline = context.watch<ConnectivityProvider>().isOnline;
@@ -164,6 +168,13 @@ class _NavigationViewState extends State<NavigationView> {
       appBar: AppBar(
         title: const Text("Navegación"),
         backgroundColor: Colors.green,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.question_answer),
+            tooltip: 'Evaluar la navegación',
+            onPressed: goToSurvey,
+          )
+        ],
       ),
       body: Stack(
         children: [
