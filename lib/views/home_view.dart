@@ -2,7 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
-import '../features/camera/camera_view.dart';
 import '../features/map/presentation/map_view.dart';
 import '../core/services/connectivity_provider.dart'; // Ajusta la ruta según tu estructura
 
@@ -239,59 +238,29 @@ class HomeView extends StatelessWidget {
                 },
               ),
             ),
-            Row(
-              children: [
-                Expanded(
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: customGreen,
-                      textStyle: const TextStyle(
-                        color: Colors.white,
-                        fontFamily: 'Nunito',
-                      ),
-                    ),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const MapView()),
-                      );
-                    },
-                    child: const Text(
-                      'Ver puntos cercanos',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontFamily: 'Nunito',
-                      ),
-                    ),
-                  ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: customGreen,
+                textStyle: const TextStyle(
+                  color: Colors.white,
+                  fontFamily: 'Nunito',
                 ),
-                const SizedBox(width: 10), // espacio entre botones
-                Expanded(
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: customGreen,
-                      textStyle: const TextStyle(
-                        color: Colors.white,
-                        fontFamily: 'Nunito',
-                      ),
-                    ),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const CameraView()),
-                      );
-                    },
-                    child: const Text(
-                      'Escanear Residuo',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontFamily: 'Nunito',
-                      ),
-                    ),
-                  ),
+              ),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const MapView()),
+                );
+              }
+              ,
+              child: const Text(
+                'Ver puntos cercanos',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontFamily: 'Nunito',
                 ),
-              ],
-            )
+              ),
+            ),
           ],
         ),
       ),
