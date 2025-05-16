@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
+import '../features/camera/camera_view.dart';
 import '../features/map/presentation/map_view.dart';
 import '../core/services/connectivity_provider.dart'; // Ajusta la ruta según tu estructura
 
@@ -277,7 +278,7 @@ class HomeView extends StatelessWidget {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => const MapView()),
+                        MaterialPageRoute(builder: (context) => const CameraView()),
                       );
                     },
                     child: const Text(
