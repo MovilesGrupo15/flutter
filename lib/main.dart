@@ -10,9 +10,13 @@ import 'features/login/viewmodels/login_viewmodel.dart';
 import 'features/map/state/map_mediator.dart';
 import 'router/app_router.dart';
 import 'features/map/data/recycling_cache_service.dart';
+import 'package:camera/camera.dart';
+
+late final List<CameraDescription> cameras;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  cameras = await availableCameras();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -31,6 +35,7 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
+        Provider<List<CameraDescription>>.value(value: cameras),
         ChangeNotifierProvider(create: (_) => ConnectivityProvider()),
         Provider(create: (context) => AuthService()),
         ChangeNotifierProvider(create: (context) => LoginViewModel(context.read<AuthService>())),

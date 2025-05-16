@@ -238,29 +238,59 @@ class HomeView extends StatelessWidget {
                 },
               ),
             ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: customGreen,
-                textStyle: const TextStyle(
-                  color: Colors.white,
-                  fontFamily: 'Nunito',
+            Row(
+              children: [
+                Expanded(
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: customGreen,
+                      textStyle: const TextStyle(
+                        color: Colors.white,
+                        fontFamily: 'Nunito',
+                      ),
+                    ),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const MapView()),
+                      );
+                    },
+                    child: const Text(
+                      'Ver puntos cercanos',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontFamily: 'Nunito',
+                      ),
+                    ),
+                  ),
                 ),
-              ),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const MapView()),
-                );
-              }
-              ,
-              child: const Text(
-                'Ver puntos cercanos',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontFamily: 'Nunito',
+                const SizedBox(width: 10), // espacio entre botones
+                Expanded(
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: customGreen,
+                      textStyle: const TextStyle(
+                        color: Colors.white,
+                        fontFamily: 'Nunito',
+                      ),
+                    ),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const MapView()),
+                      );
+                    },
+                    child: const Text(
+                      'Escanear Residuo',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontFamily: 'Nunito',
+                      ),
+                    ),
+                  ),
                 ),
-              ),
-            ),
+              ],
+            )
           ],
         ),
       ),

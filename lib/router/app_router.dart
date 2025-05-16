@@ -1,3 +1,4 @@
+import 'package:ecosnap/features/camera/photopreview_view.dart';
 import 'package:flutter/material.dart';
 import '../features/login/views/login_screen.dart';
 import '../features/login/views/register_view.dart';
@@ -5,6 +6,7 @@ import '../features/map/presentation/map_view.dart';
 import '../features/map/presentation/point_detail_view.dart';
 import '../features/map/presentation/navigation_view.dart';
 import '../features/map/presentation/feedback_view.dart';
+import '../features/camera/camera_view.dart';
 import '../views/home_view.dart';
 import '../features/map/data/recycling_point_model.dart';
 
@@ -35,6 +37,11 @@ class AppRouter {
       case '/mapView':
         return MaterialPageRoute(
           builder: (_) => MapView(),
+          settings: settings,
+        );
+      case '/cameraView':
+        return MaterialPageRoute(
+          builder: (_) => CameraView(),
           settings: settings,
         );
       case '/pointDetail':
