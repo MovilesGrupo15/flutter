@@ -36,15 +36,7 @@ class HomeView extends StatelessWidget {
               // Parte superior: Opciones
               Column(
                 children: [
-                  ListTile(
-                    leading: const Icon(Icons.settings),
-                    title: const Text('Configuración'),
-                    onTap: () {
-                      // Aquí puedes navegar a un SettingsView o mostrar un mensaje
-                      Navigator.pop(context); // cerrar el drawer
-                      // Navigator.pushNamed(context, '/settings');
-                    },
-                  ),
+
                 ],
               ),
               // Parte inferior: Cerrar sesión
