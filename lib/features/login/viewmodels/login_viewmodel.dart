@@ -14,13 +14,13 @@ class LoginViewModel extends ChangeNotifier {
     errorMessage = null;
     notifyListeners();
 
-    bool success = await _authService.login(email, password);
+    final (success, error) = await _authService.login(email, password);
 
     isLoading = false;
     if (success) {
       Navigator.restorablePushReplacementNamed(context, '/homeView');
     } else {
-      errorMessage = "Credenciales incorrectas";
+      errorMessage = error;
     }
     notifyListeners();
   }
@@ -28,20 +28,16 @@ class LoginViewModel extends ChangeNotifier {
   Future<void> register(BuildContext context, String email, String password, String displayName) async {
     isLoading = true;
     errorMessage = null;
-
-
     notifyListeners();
 
-    bool success = await _authService.register(email, password);
+    final (success, error) = await _authService.register(email, password);
 
     isLoading = false;
     if (success) {
       Navigator.restorablePushReplacementNamed(context, '/');
     } else {
-      errorMessage = "Error al registrar el usuario";
+      errorMessage = error ?? "Error al registrar el usuario";
     }
     notifyListeners();
   }
-
-
 }

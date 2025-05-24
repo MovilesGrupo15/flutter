@@ -33,6 +33,48 @@ class _MapViewState extends State<MapView> {
     });
   }
 
+  void _openMaterialFilterDialog() async {
+    final mediator = Provider.of<MapMediator>(context, listen: false);
+    final materials = mediator.availableMaterials;
+
+    String? selected = await showDialog<String>(
+      context: context,
+      builder: (context) {
+        String? current = mediator.selectedMaterial;
+        return AlertDialog(
+          title: const Text("Filtrar por material"),
+          content: SingleChildScrollView(
+            child: Column(
+              children: [
+                RadioListTile<String?>(
+                  title: const Text("Mostrar todos"),
+                  value: null,
+                  groupValue: current,
+                  onChanged: (val) => Navigator.of(context).pop(val),
+                ),
+                for (final material in materials)
+                  RadioListTile<String?>(
+                    title: Text(material),
+                    value: material,
+                    groupValue: current,
+                    onChanged: (val) => Navigator.of(context).pop(val),
+                  ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+
+    if (selected != mediator.selectedMaterial) {
+      mediator.setMaterialFilter(selected);
+    }
+  }
+
+  void _goToRouteHistory() {
+    Navigator.pushNamed(context, '/routeHistory');
+  }
+
   @override
   Widget build(BuildContext context) {
     final mapMediator = Provider.of<MapMediator>(context);
@@ -43,6 +85,18 @@ class _MapViewState extends State<MapView> {
         backgroundColor: Colors.green,
         title: const Text("Puntos Cercanos", style: TextStyle(color: Colors.white)),
         iconTheme: const IconThemeData(color: Colors.white),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.filter_alt),
+            tooltip: "Filtrar por material",
+            onPressed: _openMaterialFilterDialog,
+          ),
+          IconButton(
+            icon: const Icon(Icons.history),
+            tooltip: "Historial de rutas",
+            onPressed: _goToRouteHistory,
+          ),
+        ],
       ),
       body: Stack(
         children: [
@@ -76,8 +130,7 @@ class _MapViewState extends State<MapView> {
                             ),
                             width: 50.0,
                             height: 50.0,
-                            child: const Icon(Icons.location_pin,
-                                color: Colors.red, size: 40),
+                            child: const Icon(Icons.location_pin, color: Colors.red, size: 40),
                           ),
                         ],
                       ),
@@ -162,8 +215,7 @@ class _MapViewState extends State<MapView> {
                             children: [
                               Text("Residuo: ${point.residuoNombre}"),
                               Text("Horario: ${point.horario}"),
-                              if (distanceText.isNotEmpty)
-                                Text("Distancia: $distanceText"),
+                              if (distanceText.isNotEmpty) Text("Distancia: $distanceText"),
                             ],
                           ),
                           leading: const Icon(Icons.recycling, color: Colors.green),
