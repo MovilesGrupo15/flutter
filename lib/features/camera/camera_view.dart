@@ -5,7 +5,6 @@ import 'package:camera/camera.dart';
 import 'package:provider/provider.dart';
 import 'package:ecosnap/features/camera/photopreview_view.dart';
 
-
 Future<int> _processImage(String path) async {
   final bytes = await File(path).readAsBytes();
   return bytes.length;
@@ -42,7 +41,6 @@ class _CameraViewState extends State<CameraView> {
     }
   }
 
-  /// Captura la foto, la procesa en un isolate y navega al preview
   Future<void> _takePicture() async {
     if (!_controller.value.isInitialized || _controller.value.isTakingPicture) return;
     try {
@@ -66,6 +64,7 @@ class _CameraViewState extends State<CameraView> {
       debugPrint('Error al tomar la foto: $e');
     }
   }
+
   @override
   void dispose() {
     _controller.dispose();
@@ -74,43 +73,49 @@ class _CameraViewState extends State<CameraView> {
 
   @override
   Widget build(BuildContext context) {
-    final screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.pushReplacementNamed(context, '/homeView'),
         ),
-        title: const Text('Escanear Residuo'),
+        title: const Text('Escanear residuo'),
         backgroundColor: const Color(0xFF2ECC71),
       ),
       body: SafeArea(
-        child: Column(
+        child: Stack(
           children: [
-            Expanded(
+            Positioned.fill(
               child: _isInitialized
                   ? AspectRatio(
-                aspectRatio: _controller.value.aspectRatio,
-                child: CameraPreview(_controller),
-              )
+                      aspectRatio: _controller.value.aspectRatio,
+                      child: CameraPreview(_controller),
+                    )
                   : const Center(child: CircularProgressIndicator()),
             ),
-            Container(
-              height: screenHeight * 0.3,
-              width: double.infinity,
-              color: Colors.green,
-              alignment: Alignment.center,
-              child: ElevatedButton(
-                onPressed: _takePicture,
-                style: ElevatedButton.styleFrom(
-                  fixedSize: const Size(120, 120),
-                  shape: const CircleBorder(),
-                  padding: EdgeInsets.zero,
-                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  backgroundColor: Colors.white,
-                  elevation: 2,
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Container(
+                padding: const EdgeInsets.only(bottom: 40),
+                decoration: BoxDecoration(
+                  color: Colors.black.withOpacity(0.3),
+                  borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
                 ),
-                child: const SizedBox(),
+                child: ElevatedButton(
+                  onPressed: _takePicture,
+                  style: ElevatedButton.styleFrom(
+                    shape: const CircleBorder(),
+                    padding: const EdgeInsets.all(20),
+                    elevation: 10,
+                    backgroundColor: Colors.white,
+                    shadowColor: Colors.black45,
+                  ),
+                  child: const Icon(
+                    Icons.camera_alt,
+                    color: Color(0xFF2ECC71),
+                    size: 40,
+                  ),
+                ),
               ),
             ),
           ],
@@ -119,8 +124,3 @@ class _CameraViewState extends State<CameraView> {
     );
   }
 }
-
-/*
-Para cambiar el tamaño del botón:
- • Ajusta `fixedSize: Size(width, height)`.
-*/
