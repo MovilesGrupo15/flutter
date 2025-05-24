@@ -6,6 +6,7 @@ import '../features/map/presentation/point_detail_view.dart';
 import '../features/map/presentation/navigation_view.dart';
 import '../features/map/presentation/feedback_view.dart';
 import '../features/map/presentation/direction_feedback_view.dart';
+import '../features/map/presentation/route_history_view.dart'; // 👈 nueva vista
 import '../features/camera/camera_view.dart';
 import '../features/camera/photopreview_view.dart';
 import '../views/home_view.dart';
@@ -35,6 +36,8 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => const FeedbackView(), settings: settings);
       case '/directionFeedback':
         return MaterialPageRoute(builder: (_) => const DirectionFeedbackView(), settings: settings);
+      case '/routeHistory':
+        return MaterialPageRoute(builder: (_) => const RouteHistoryView(), settings: settings); // ✅ nueva ruta
       default:
         return MaterialPageRoute(
           builder: (_) => const Scaffold(

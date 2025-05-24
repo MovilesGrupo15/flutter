@@ -10,10 +10,16 @@ class MapMediator extends ChangeNotifier {
   Position? _currentPosition;
   bool _isLoading = false;
   List<RecyclingPoint> _recyclingPoints = [];
+  List<RecyclingPoint> _filteredPoints = [];
+
+  String? _selectedMaterial;
+  List<String> _availableMaterials = [];
 
   Position? get currentPosition => _currentPosition;
   bool get isLoading => _isLoading;
-  List<RecyclingPoint> get recyclingPoints => _recyclingPoints;
+  List<RecyclingPoint> get recyclingPoints => _filteredPoints;
+  String? get selectedMaterial => _selectedMaterial;
+  List<String> get availableMaterials => _availableMaterials;
 
   Future<void> fetchLocation() async {
     _isLoading = true;
@@ -62,7 +68,32 @@ class MapMediator extends ChangeNotifier {
           (a.distanceMeters ?? 0).compareTo(b.distanceMeters ?? 0));
     }
 
+    // Extraemos materiales únicos
+    _availableMaterials = _recyclingPoints
+        .map((p) => p.residuoNombre)
+        .where((name) => name.isNotEmpty)
+        .toSet()
+        .toList()
+      ..sort();
+
+    applyFilter();
     _isLoading = false;
     notifyListeners();
+  }
+
+  void setMaterialFilter(String? material) {
+    _selectedMaterial = material;
+    applyFilter();
+    notifyListeners();
+  }
+
+  void applyFilter() {
+    if (_selectedMaterial == null || _selectedMaterial!.isEmpty) {
+      _filteredPoints = List.from(_recyclingPoints);
+    } else {
+      _filteredPoints = _recyclingPoints
+          .where((point) => point.residuoNombre == _selectedMaterial)
+          .toList();
+    }
   }
 }
