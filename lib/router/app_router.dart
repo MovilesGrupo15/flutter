@@ -1,3 +1,4 @@
+import 'package:ecosnap/views/photo_gallery_view.dart';
 import 'package:flutter/material.dart';
 import '../features/login/views/login_screen.dart';
 import '../features/login/views/register_view.dart';
@@ -6,9 +7,8 @@ import '../features/map/presentation/point_detail_view.dart';
 import '../features/map/presentation/navigation_view.dart';
 import '../features/map/presentation/feedback_view.dart';
 import '../features/map/presentation/direction_feedback_view.dart';
-import '../features/map/presentation/route_history_view.dart'; // 👈 nueva vista
+import '../features/map/presentation/route_history_view.dart';
 import '../features/camera/camera_view.dart';
-import '../features/camera/photopreview_view.dart';
 import '../views/home_view.dart';
 import '../features/map/data/recycling_point_model.dart';
 
@@ -37,7 +37,9 @@ class AppRouter {
       case '/directionFeedback':
         return MaterialPageRoute(builder: (_) => const DirectionFeedbackView(), settings: settings);
       case '/routeHistory':
-        return MaterialPageRoute(builder: (_) => const RouteHistoryView(), settings: settings); // ✅ nueva ruta
+        return MaterialPageRoute(builder: (_) => const RouteHistoryView(), settings: settings);
+      case '/photoGallery':
+        return MaterialPageRoute(builder: (_) => const PhotoGalleryView(), settings: settings);
       default:
         return MaterialPageRoute(
           builder: (_) => const Scaffold(

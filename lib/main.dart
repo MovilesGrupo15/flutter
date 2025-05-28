@@ -3,6 +3,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:path_provider/path_provider.dart';
+
 import 'firebase_options.dart';
 import 'core/services/connectivity_provider.dart';
 import 'core/services/auth_service.dart';
@@ -17,20 +20,33 @@ late final List<CameraDescription> cameras;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   cameras = await availableCameras();
+
+
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
+  if (!Hive.isBoxOpen('photoPaths')) {
+    final dir = await getApplicationDocumentsDirectory();
+    await Hive.initFlutter(dir.path);
+    await Hive.openBox<String>('photoPaths');
+  }
+
+
   await RecyclingCacheService.init();
+
 
   Future.microtask(() async {
     try {
-      final response = await http.get(Uri.parse('https://ecosnap-back.onrender.com/api/points')).timeout(const Duration(seconds: 50));
+      final response = await http
+          .get(Uri.parse('https://ecosnap-back.onrender.com/api/points'))
+          .timeout(const Duration(seconds: 50));
       debugPrint('Ping API: ${response.statusCode}');
     } catch (e) {
       debugPrint('Error haciendo ping al API: $e');
     }
   });
+
 
   runApp(
     MultiProvider(
