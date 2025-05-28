@@ -4,7 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
 import '../features/camera/camera_view.dart';
 import '../features/map/presentation/map_view.dart';
-import '../core/services/connectivity_provider.dart'; // Ajusta la ruta según tu estructura
+import '../core/services/connectivity_provider.dart';
 
 const Color customGreen = Color(0xFF4CAF50);
 
@@ -33,13 +33,30 @@ class HomeView extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              // Parte superior: Opciones
               Column(
                 children: [
-
+                  ListTile(
+                    leading: const Icon(Icons.photo_library, color: customGreen),
+                    title: const Text(
+                      'Fotos analizadas',
+                      style: TextStyle(fontFamily: 'Nunito-Bold'),
+                    ),
+                    onTap: () {
+                      Navigator.pushNamed(context, '/photoGallery');
+                    },
+                  ),
+                  ListTile(
+                    leading: const Icon(Icons.feedback, color: customGreen),
+                    title: const Text(
+                      'Feedback de Anuncios',
+                      style: TextStyle(fontFamily: 'Nunito-Bold'),
+                    ),
+                    onTap: () {
+                      Navigator.pushNamed(context, '/adFeedback');
+                    },
+                  ),
                 ],
               ),
-              // Parte inferior: Cerrar sesión
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: ElevatedButton.icon(
@@ -50,7 +67,8 @@ class HomeView extends StatelessWidget {
                   ),
                   onPressed: () async {
                     await FirebaseAuth.instance.signOut();
-                    Navigator.pushReplacementNamed(context, '/loginView');                  },
+                    Navigator.pushReplacementNamed(context, '/loginView');
+                  },
                   icon: const Icon(Icons.logout),
                   label: const Text('Cerrar sesión'),
                 ),
@@ -135,7 +153,7 @@ class HomeView extends StatelessWidget {
                                           imagenUrl,
                                           fit: BoxFit.cover,
                                           errorBuilder: (context, error, stackTrace) =>
-                                          const Icon(Icons.broken_image, size: 60),
+                                              const Icon(Icons.broken_image, size: 60),
                                         ),
                                       ),
                                       const SizedBox(height: 12),
@@ -202,7 +220,7 @@ class HomeView extends StatelessWidget {
                                   imagenUrl,
                                   fit: BoxFit.cover,
                                   errorBuilder: (context, error, stackTrace) =>
-                                  const Icon(Icons.broken_image, size: 48),
+                                      const Icon(Icons.broken_image, size: 48),
                                 ),
                               ),
                               const SizedBox(height: 8),
@@ -231,16 +249,22 @@ class HomeView extends StatelessWidget {
                 },
               ),
             ),
+            const SizedBox(height: 12),
             Row(
               children: [
                 Expanded(
-                  child: ElevatedButton(
+                  child: ElevatedButton.icon(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: customGreen,
-                      textStyle: const TextStyle(
-                        color: Colors.white,
-                        fontFamily: 'Nunito',
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      backgroundColor: Colors.green.shade700,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
                       ),
+                    ),
+                    icon: const Icon(Icons.map, color: Colors.white),
+                    label: const Text(
+                      'Ver puntos cercanos',
+                      style: TextStyle(color: Colors.white, fontFamily: 'Nunito-Bold'),
                     ),
                     onPressed: () {
                       Navigator.push(
@@ -248,24 +272,22 @@ class HomeView extends StatelessWidget {
                         MaterialPageRoute(builder: (context) => const MapView()),
                       );
                     },
-                    child: const Text(
-                      'Ver puntos cercanos',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontFamily: 'Nunito',
-                      ),
-                    ),
                   ),
                 ),
-                const SizedBox(width: 10), // espacio entre botones
+                const SizedBox(width: 12),
                 Expanded(
-                  child: ElevatedButton(
+                  child: ElevatedButton.icon(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: customGreen,
-                      textStyle: const TextStyle(
-                        color: Colors.white,
-                        fontFamily: 'Nunito',
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      backgroundColor: Colors.green.shade700,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
                       ),
+                    ),
+                    icon: const Icon(Icons.camera_alt, color: Colors.white),
+                    label: const Text(
+                      'Escanear Residuo',
+                      style: TextStyle(color: Colors.white, fontFamily: 'Nunito-Bold'),
                     ),
                     onPressed: () {
                       Navigator.push(
@@ -273,17 +295,10 @@ class HomeView extends StatelessWidget {
                         MaterialPageRoute(builder: (context) => const CameraView()),
                       );
                     },
-                    child: const Text(
-                      'Escanear Residuo',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontFamily: 'Nunito',
-                      ),
-                    ),
                   ),
                 ),
               ],
-            )
+            ),
           ],
         ),
       ),

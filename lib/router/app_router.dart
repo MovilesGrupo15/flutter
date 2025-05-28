@@ -11,6 +11,7 @@ import '../features/map/presentation/route_history_view.dart';
 import '../features/camera/camera_view.dart';
 import '../views/home_view.dart';
 import '../features/map/data/recycling_point_model.dart';
+import '../views/ad_feedback_view.dart';
 
 class AppRouter {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -40,6 +41,8 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => const RouteHistoryView(), settings: settings);
       case '/photoGallery':
         return MaterialPageRoute(builder: (_) => const PhotoGalleryView(), settings: settings);
+      case '/adFeedback':
+        return MaterialPageRoute(builder: (_) => const AdFeedbackView(), settings: settings);
       default:
         return MaterialPageRoute(
           builder: (_) => const Scaffold(

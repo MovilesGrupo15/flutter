@@ -119,7 +119,7 @@ class _CameraViewState extends State<CameraView> {
                     'Sin conexión. Tus datos se guardarán localmente.',
                     style: TextStyle(color: Colors.white),
                   ),
-                  actions: [SizedBox()], // ← evita error cuando actions está vacío
+                  actions: [SizedBox.shrink()],
                 ),
               ),
             Align(
