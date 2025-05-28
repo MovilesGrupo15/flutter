@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:provider/provider.dart';
 import 'package:ecosnap/features/camera/photopreview_view.dart';
+import 'package:ecosnap/widgets/capture_button_widget.dart';
+import 'package:ecosnap/core/services/connectivity_provider.dart';
 
 Future<int> _processImage(String path) async {
   final bytes = await File(path).readAsBytes();
@@ -73,6 +75,8 @@ class _CameraViewState extends State<CameraView> {
 
   @override
   Widget build(BuildContext context) {
+    final isOnline = context.watch<ConnectivityProvider>().isOnline;
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -93,6 +97,20 @@ class _CameraViewState extends State<CameraView> {
                     )
                   : const Center(child: CircularProgressIndicator()),
             ),
+            if (!isOnline)
+              const Positioned(
+                top: 0,
+                left: 0,
+                right: 0,
+                child: MaterialBanner(
+                  backgroundColor: Colors.red,
+                  content: Text(
+                    'Sin conexión. Tus datos se guardarán localmente.',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  actions: [SizedBox.shrink()],
+                ),
+              ),
             Align(
               alignment: Alignment.bottomCenter,
               child: Container(
@@ -101,21 +119,7 @@ class _CameraViewState extends State<CameraView> {
                   color: Colors.black.withOpacity(0.3),
                   borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
                 ),
-                child: ElevatedButton(
-                  onPressed: _takePicture,
-                  style: ElevatedButton.styleFrom(
-                    shape: const CircleBorder(),
-                    padding: const EdgeInsets.all(20),
-                    elevation: 10,
-                    backgroundColor: Colors.white,
-                    shadowColor: Colors.black45,
-                  ),
-                  child: const Icon(
-                    Icons.camera_alt,
-                    color: Color(0xFF2ECC71),
-                    size: 40,
-                  ),
-                ),
+                child: CaptureButtonWidget(onPressed: _takePicture),
               ),
             ),
           ],
