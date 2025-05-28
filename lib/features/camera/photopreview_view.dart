@@ -5,8 +5,7 @@ import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
-import 'package:provider/provider.dart';
-import 'package:ecosnap/core/services/connectivity_provider.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 
 class PhotoPreviewView extends StatefulWidget {
   final String imagePath;
@@ -37,12 +36,27 @@ class _PhotoPreviewViewState extends State<PhotoPreviewView> {
 
       channel.sink.add(bytes);
 
-      channel.stream.listen((message) {
+      channel.stream.listen((message) async {
         final data = json.decode(message);
         setState(() {
           detections = data;
           isLoading = false;
         });
+
+        final materials = detections
+            .map((d) => d['type'].toString())
+            .toSet()
+            .toList();
+
+        await FirebaseAnalytics.instance.logEvent(
+          name: 'recycled_materials_detected',
+          parameters: {
+            'materials': materials,
+            'count': materials.length,
+            'timestamp': DateTime.now().toIso8601String(),
+          },
+        );
+
         channel.sink.close();
       });
     } catch (e) {
@@ -76,8 +90,6 @@ class _PhotoPreviewViewState extends State<PhotoPreviewView> {
 
   @override
   Widget build(BuildContext context) {
-    final isOnline = context.watch<ConnectivityProvider>().isOnline;
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Previsualización'),
@@ -86,20 +98,6 @@ class _PhotoPreviewViewState extends State<PhotoPreviewView> {
       body: Stack(
         children: [
           Image.file(File(widget.imagePath)),
-          if (!isOnline)
-            const Positioned(
-              top: 0,
-              left: 0,
-              right: 0,
-              child: MaterialBanner(
-                backgroundColor: Colors.red,
-                content: Text(
-                  'Sin conexión. Tus datos se guardarán localmente.',
-                  style: TextStyle(color: Colors.white),
-                ),
-                actions: [],
-              ),
-            ),
           if (isLoading)
             const Center(child: CircularProgressIndicator())
           else
@@ -140,7 +138,9 @@ class _PhotoPreviewViewState extends State<PhotoPreviewView> {
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () async {
           await _saveConfirmedPhoto();
-          if (mounted) Navigator.pop(context, true);
+          if (mounted) {
+            Navigator.pop(context, true);
+          }
         },
         label: const Text('Confirmar'),
         icon: const Icon(Icons.check),

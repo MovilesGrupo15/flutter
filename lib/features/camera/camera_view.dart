@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:ecosnap/features/camera/photopreview_view.dart';
 import 'package:ecosnap/widgets/capture_button_widget.dart';
 import 'package:ecosnap/core/services/connectivity_provider.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 
 Future<int> _processImage(String path) async {
   final bytes = await File(path).readAsBytes();
@@ -49,6 +50,16 @@ class _CameraViewState extends State<CameraView> {
       final XFile file = await _controller.takePicture();
       final int size = await compute(_processImage, file.path);
       debugPrint('Tamaño de la imagen (bytes): $size');
+
+      // Lanzar evento a Firebase Analytics
+      await FirebaseAnalytics.instance.logEvent(
+        name: 'photo_taken',
+        parameters: {
+          'resolution': _controller.value.previewSize?.toString() ?? 'unknown',
+          'timestamp': DateTime.now().toIso8601String(),
+          'size_bytes': size,
+        },
+      );
 
       final bool? confirmed = await Navigator.push(
         context,
@@ -108,7 +119,7 @@ class _CameraViewState extends State<CameraView> {
                     'Sin conexión. Tus datos se guardarán localmente.',
                     style: TextStyle(color: Colors.white),
                   ),
-                  actions: [],
+                  actions: [SizedBox()], // ← evita error cuando actions está vacío
                 ),
               ),
             Align(
