@@ -45,6 +45,16 @@ class HomeView extends StatelessWidget {
                       Navigator.pushNamed(context, '/photoGallery');
                     },
                   ),
+                  ListTile(
+                    leading: const Icon(Icons.feedback, color: customGreen),
+                    title: const Text(
+                      'Feedback de Anuncios',
+                      style: TextStyle(fontFamily: 'Nunito-Bold'),
+                    ),
+                    onTap: () {
+                      Navigator.pushNamed(context, '/adFeedback');
+                    },
+                  ),
                 ],
               ),
               Padding(
@@ -239,16 +249,22 @@ class HomeView extends StatelessWidget {
                 },
               ),
             ),
+            const SizedBox(height: 12),
             Row(
               children: [
                 Expanded(
-                  child: ElevatedButton(
+                  child: ElevatedButton.icon(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: customGreen,
-                      textStyle: const TextStyle(
-                        color: Colors.white,
-                        fontFamily: 'Nunito',
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      backgroundColor: Colors.green.shade700,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
                       ),
+                    ),
+                    icon: const Icon(Icons.map, color: Colors.white),
+                    label: const Text(
+                      'Ver puntos cercanos',
+                      style: TextStyle(color: Colors.white, fontFamily: 'Nunito-Bold'),
                     ),
                     onPressed: () {
                       Navigator.push(
@@ -256,24 +272,22 @@ class HomeView extends StatelessWidget {
                         MaterialPageRoute(builder: (context) => const MapView()),
                       );
                     },
-                    child: const Text(
-                      'Ver puntos cercanos',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontFamily: 'Nunito',
-                      ),
-                    ),
                   ),
                 ),
-                const SizedBox(width: 10),
+                const SizedBox(width: 12),
                 Expanded(
-                  child: ElevatedButton(
+                  child: ElevatedButton.icon(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: customGreen,
-                      textStyle: const TextStyle(
-                        color: Colors.white,
-                        fontFamily: 'Nunito',
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      backgroundColor: Colors.green.shade700,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
                       ),
+                    ),
+                    icon: const Icon(Icons.camera_alt, color: Colors.white),
+                    label: const Text(
+                      'Escanear Residuo',
+                      style: TextStyle(color: Colors.white, fontFamily: 'Nunito-Bold'),
                     ),
                     onPressed: () {
                       Navigator.push(
@@ -281,17 +295,10 @@ class HomeView extends StatelessWidget {
                         MaterialPageRoute(builder: (context) => const CameraView()),
                       );
                     },
-                    child: const Text(
-                      'Escanear Residuo',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontFamily: 'Nunito',
-                      ),
-                    ),
                   ),
                 ),
               ],
-            )
+            ),
           ],
         ),
       ),
