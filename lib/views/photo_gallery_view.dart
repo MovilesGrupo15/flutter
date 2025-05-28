@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+import 'package:provider/provider.dart';
+import '../../core/services/connectivity_provider.dart';
 
 class PhotoGalleryView extends StatefulWidget {
   const PhotoGalleryView({super.key});
@@ -31,7 +33,7 @@ class _PhotoGalleryViewState extends State<PhotoGalleryView> {
               onPressed: () async {
                 await _photoBox.deleteAt(index);
                 Navigator.pop(context);
-                setState(() {}); // actualiza la galería
+                setState(() {});
               },
             )
           ],
@@ -42,34 +44,56 @@ class _PhotoGalleryViewState extends State<PhotoGalleryView> {
 
   @override
   Widget build(BuildContext context) {
+    final isOnline = context.watch<ConnectivityProvider>().isOnline;
     final paths = _photoBox.values.toList();
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Mis Reciclajes'),
+        title: const Text('Mis fotos analizadas'),
         backgroundColor: const Color(0xFF2ECC71),
       ),
-      body: paths.isEmpty
-          ? const Center(child: Text('No hay fotos guardadas.'))
-          : GridView.builder(
-              padding: const EdgeInsets.all(12),
-              itemCount: paths.length,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
-                crossAxisSpacing: 8,
-                mainAxisSpacing: 8,
+      body: Column(
+        children: [
+          if (!isOnline)
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(8),
+              color: Colors.red,
+              child: const Text(
+                'Sin conexión a Internet',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontFamily: 'Nunito-Bold',
+                  fontSize: 16,
+                ),
+                textAlign: TextAlign.center,
               ),
-              itemBuilder: (_, index) {
-                final path = paths[index];
-                return GestureDetector(
-                  onTap: () => _showImageDialog(path, index),
-                  child: Image.file(
-                    File(path),
-                    fit: BoxFit.cover,
-                  ),
-                );
-              },
             ),
+          Expanded(
+            child: paths.isEmpty
+                ? const Center(child: Text('No hay fotos guardadas.'))
+                : GridView.builder(
+                    padding: const EdgeInsets.all(12),
+                    itemCount: paths.length,
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 3,
+                      crossAxisSpacing: 8,
+                      mainAxisSpacing: 8,
+                    ),
+                    itemBuilder: (_, index) {
+                      final path = paths[index];
+                      return GestureDetector(
+                        onTap: () => _showImageDialog(path, index),
+                        child: Image.file(
+                          File(path),
+                          fit: BoxFit.cover,
+                        ),
+                      );
+                    },
+                  ),
+          ),
+        ],
+      ),
     );
   }
 }
